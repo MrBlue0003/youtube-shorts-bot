@@ -1,0 +1,32 @@
+# Secrets — NEVER commit these
+.env
+client_secrets.json
+youtube_token.json
+client_secret_*.json
+
+# Generated media (can be large) — pastreaza structura de foldere
+videos/*
+!videos/.gitkeep
+shorts/*
+!shorts/.gitkeep
+
+# Logs — pastreaza folderul
+logs/*
+!logs/.gitkeep
+
+# Music — pastreaza folderul (melodiile se descarca automat)
+music/*
+!music/.gitkeep
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+dist/
+build/
+
+# OS
+.DS_Store
+Thumbs.db

@@ -1,0 +1,15 @@
+# ── Core ───────────────────────────────────────────────────────────
+python-dotenv==1.0.1
+
+# ── HTTP & API ─────────────────────────────────────────────────────
+requests==2.32.3
+urllib3==2.2.2
+
+# ── Google / YouTube ───────────────────────────────────────────────
+google-auth==2.30.0
+google-auth-oauthlib==1.2.0
+google-auth-httplib2==0.2.0
+google-api-python-client==2.133.0
+
+# ── Timezone support (stdlib zoneinfo backend data) ─────────────────
+tzdata==2024.1

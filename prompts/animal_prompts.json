@@ -1,0 +1,196 @@
+{
+  "prompts": [
+    {
+      "id": 1,
+      "animal": "cat",
+      "action": "cooking",
+      "prompt": "cute 2D animated cat wearing a tiny chef hat, cooking pasta and stirring a pot, flat design, pastel colors, cozy kitchen background, no text, loop motion, 9:16 vertical, kawaii style"
+    },
+    {
+      "id": 2,
+      "animal": "cat",
+      "action": "little_treat",
+      "prompt": "cute 2D animated cat holding a tiny cupcake with sparkly eyes, little treat moment, flat design, pastel pink colors, joyful expression, no text, loop motion, 9:16 vertical, kawaii style"
+    },
+    {
+      "id": 3,
+      "animal": "cat",
+      "action": "cozy_sleep",
+      "prompt": "cute 2D animated cat sleeping curled up in a cozy blanket with tiny Zzz bubbles, flat design, soft pastel lavender colors, candle glowing nearby, no text, loop motion, 9:16 vertical, kawaii style"
+    },
+    {
+      "id": 4,
+      "animal": "dog",
+      "action": "dancing",
+      "prompt": "cute 2D animated golden retriever dancing with tiny paws wiggling, disco lights, flat design, pastel yellow and purple colors, huge smile, no text, loop motion, 9:16 vertical, kawaii style"
+    },
+    {
+      "id": 5,
+      "animal": "dog",
+      "action": "cooking",
+      "prompt": "cute 2D animated corgi baking cookies, sliding a tray into an oven, happy tail wagging, flat design, pastel orange colors, cozy kitchen, no text, loop motion, 9:16 vertical, kawaii style"
+    },
+    {
+      "id": 6,
+      "animal": "dog",
+      "action": "exaggerated_reaction",
+      "prompt": "cute 2D animated shiba inu with exaggerated shocked expression, eyes wide, jaw dropping, sparkles everywhere, flat design, pastel colors, meme-style reaction, no text, loop motion, 9:16 vertical, kawaii style"
+    },
+    {
+      "id": 7,
+      "animal": "capybara",
+      "action": "cozy",
+      "prompt": "cute 2D animated capybara relaxing in a hot spring with tiny mandarin oranges floating around, steam rising, blissful smile, flat design, pastel green and blue colors, no text, loop motion, 9:16 vertical, kawaii style"
+    },
+    {
+      "id": 8,
+      "animal": "capybara",
+      "action": "little_treat",
+      "prompt": "cute 2D animated capybara eating a strawberry with pure joy, petals falling around it, flat design, pastel pink and beige colors, sparkly eyes, no text, loop motion, 9:16 vertical, kawaii style"
+    },
+    {
+      "id": 9,
+      "animal": "capybara",
+      "action": "dancing",
+      "prompt": "cute 2D animated capybara doing a wholesome shuffle dance, tiny flowers sprouting around its feet, flat design, pastel yellow colors, big smile, no text, loop motion, 9:16 vertical, kawaii style"
+    },
+    {
+      "id": 10,
+      "animal": "panda",
+      "action": "cooking",
+      "prompt": "cute 2D animated panda making bamboo sushi rolls, tiny chef hat, concentration face, flat design, pastel black and white with green accents, no text, loop motion, 9:16 vertical, kawaii style"
+    },
+    {
+      "id": 11,
+      "animal": "panda",
+      "action": "cozy_sleep",
+      "prompt": "cute 2D animated panda sleeping inside a giant bamboo, soft snoring, tiny stars floating, flat design, pastel green and white colors, dreamy atmosphere, no text, loop motion, 9:16 vertical, kawaii style"
+    },
+    {
+      "id": 12,
+      "animal": "panda",
+      "action": "exaggerated_reaction",
+      "prompt": "cute 2D animated panda dramatically falling over after tasting delicious food, stars and hearts flying out, flat design, pastel colors, over-the-top cute reaction, no text, loop motion, 9:16 vertical, kawaii style"
+    },
+    {
+      "id": 13,
+      "animal": "koala",
+      "action": "cozy",
+      "prompt": "cute 2D animated koala hugging a eucalyptus branch, sipping tea from a tiny mug, rain falling outside window, cozy vibes, flat design, pastel grey and mint colors, no text, loop motion, 9:16 vertical, kawaii style"
+    },
+    {
+      "id": 14,
+      "animal": "koala",
+      "action": "little_treat",
+      "prompt": "cute 2D animated koala receiving a tiny bowl of gummy bears, expression of pure happiness, glowing eyes, flat design, pastel pink and grey colors, no text, loop motion, 9:16 vertical, kawaii style"
+    },
+    {
+      "id": 15,
+      "animal": "koala",
+      "action": "dancing",
+      "prompt": "cute 2D animated koala doing a slow happy sway dance, confetti falling, flat design, pastel purple and cream colors, sleepy but joyful expression, no text, loop motion, 9:16 vertical, kawaii style"
+    },
+    {
+      "id": 16,
+      "animal": "frog",
+      "action": "cooking",
+      "prompt": "cute 2D animated frog in a lily pad kitchen making mushroom soup, stirring with a long spoon, flat design, pastel green and yellow colors, bubbling pot, no text, loop motion, 9:16 vertical, kawaii style"
+    },
+    {
+      "id": 17,
+      "animal": "frog",
+      "action": "cozy",
+      "prompt": "cute 2D animated frog sitting on a mushroom under rain reading a tiny book with an umbrella, ultra cozy, flat design, pastel green and brown colors, no text, loop motion, 9:16 vertical, kawaii style"
+    },
+    {
+      "id": 18,
+      "animal": "frog",
+      "action": "dancing",
+      "prompt": "cute 2D animated frog doing a funky little dance on a lily pad, splashing water, flat design, pastel green and blue colors, joyful ribbiting face, no text, loop motion, 9:16 vertical, kawaii style"
+    },
+    {
+      "id": 19,
+      "animal": "duck",
+      "action": "little_treat",
+      "prompt": "cute 2D animated duckling eating a tiny piece of bread with the most satisfied face ever, flat design, pastel yellow and blue colors, water ripples, no text, loop motion, 9:16 vertical, kawaii style"
+    },
+    {
+      "id": 20,
+      "animal": "duck",
+      "action": "dancing",
+      "prompt": "cute 2D animated duck doing a butt-wiggle waddle dance in rain puddles, splashing happily, flat design, pastel yellow and teal colors, no text, loop motion, 9:16 vertical, kawaii style"
+    },
+    {
+      "id": 21,
+      "animal": "duck",
+      "action": "exaggerated_reaction",
+      "prompt": "cute 2D animated duck dramatically quacking with exaggerated shocked face at a surprise gift box, confetti exploding, flat design, pastel yellow and pink colors, no text, loop motion, 9:16 vertical, kawaii style"
+    },
+    {
+      "id": 22,
+      "animal": "bear",
+      "action": "cooking",
+      "prompt": "cute 2D animated bear making honey pancakes, drizzling honey with a huge grin, flat design, pastel brown and golden colors, cozy morning kitchen, no text, loop motion, 9:16 vertical, kawaii style"
+    },
+    {
+      "id": 23,
+      "animal": "bear",
+      "action": "cozy_sleep",
+      "prompt": "cute 2D animated bear hibernating under a mountain of blankets and pillows, snow falling outside, soft snoring, flat design, pastel blue and brown colors, no text, loop motion, 9:16 vertical, kawaii style"
+    },
+    {
+      "id": 24,
+      "animal": "bear",
+      "action": "little_treat",
+      "prompt": "cute 2D animated bear discovering a giant jar of honey, face lighting up with joy and sparkles, flat design, pastel golden and cream colors, no text, loop motion, 9:16 vertical, kawaii style"
+    },
+    {
+      "id": 25,
+      "animal": "fox",
+      "action": "dancing",
+      "prompt": "cute 2D animated fox doing an autumn leaf dance, spinning with orange and red leaves swirling around, flat design, pastel orange and red colors, joyful expression, no text, loop motion, 9:16 vertical, kawaii style"
+    },
+    {
+      "id": 26,
+      "animal": "fox",
+      "action": "cooking",
+      "prompt": "cute 2D animated fox making berry jam, stirring a colorful pot on a forest stove, steam forming heart shapes, flat design, pastel orange and purple colors, no text, loop motion, 9:16 vertical, kawaii style"
+    },
+    {
+      "id": 27,
+      "animal": "fox",
+      "action": "exaggerated_reaction",
+      "prompt": "cute 2D animated fox tasting something sour with a hilarious face scrunch, eyes watering, cartoon style, flat design, pastel orange and yellow colors, no text, loop motion, 9:16 vertical, kawaii style"
+    },
+    {
+      "id": 28,
+      "animal": "bunny",
+      "action": "little_treat",
+      "prompt": "cute 2D animated bunny receiving a giant carrot cake slice, doing a happy bunny binky jump, flat design, pastel pink and orange colors, confetti falling, no text, loop motion, 9:16 vertical, kawaii style"
+    },
+    {
+      "id": 29,
+      "animal": "bunny",
+      "action": "cozy",
+      "prompt": "cute 2D animated bunny in a flower meadow having a tiny tea party, butterflies landing on ears, dreamy soft glow, flat design, pastel pink and lavender colors, no text, loop motion, 9:16 vertical, kawaii style"
+    },
+    {
+      "id": 30,
+      "animal": "bunny",
+      "action": "dancing",
+      "prompt": "cute 2D animated bunny doing an Easter egg bop dance, bouncing rhythmically, colorful eggs popping around, flat design, pastel rainbow colors, big happy eyes, no text, loop motion, 9:16 vertical, kawaii style"
+    }
+  ],
+  "title_templates": [
+    "This {animal} {action} will make your day 🥹",
+    "POV: You are this {animal} right now ✨",
+    "This {animal} living its best life 🌸",
+    "The way this {animal} {action} is so pure 🥺",
+    "Nobody talks about how cute {animal}s are when they {action} 💕",
+    "This {animal} said treat yourself 🍰",
+    "Sending you this cozy {animal} for good vibes 🌙",
+    "This {animal} is exactly how I feel on weekends 😭",
+    "The cutest {animal} you'll see today 🌷",
+    "This {animal} energy is what we all need 💫"
+  ]
+}
