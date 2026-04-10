@@ -111,10 +111,10 @@ def notify_terminal(success: bool, video_id: str = "", error: str = "") -> None:
     sep = "=" * 60
     print(sep)
     if success:
-        print("  ✅  SHORT PUBLISHED SUCCESSFULLY")
+        print("  [OK]  SHORT PUBLISHED SUCCESSFULLY")
         print(f"      https://www.youtube.com/watch?v={video_id}")
     else:
-        print("  ❌  PIPELINE FAILED")
+        print("  [FAIL]  PIPELINE FAILED")
         print(f"      {error[:200]}")
     print(f"      {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     print(sep)
@@ -142,7 +142,7 @@ def main() -> int:
     setup_logging()
     start_ts = datetime.now(timezone.utc)
 
-    print_banner("🐾 YouTube Shorts Bot — Daily Run", "═")
+    print_banner("YouTube Shorts Bot - Daily Run", "=")
     logger.info(f"Started at {start_ts.isoformat()}")
 
     try:
