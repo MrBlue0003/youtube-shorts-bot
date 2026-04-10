@@ -58,19 +58,27 @@ HASHTAGS = (
 
 def _credentials_from_refresh_token() -> Credentials | None:
     """Build credentials from YOUTUBE_REFRESH_TOKEN in .env."""
-    secrets_path = Path(config.YOUTUBE_CLIENT_SECRETS)
-    if not secrets_path.exists():
-        return None
     if not config.YOUTUBE_REFRESH_TOKEN:
         return None
 
-    with open(secrets_path) as f:
-        secrets = json.load(f)
-
-    web_or_installed = secrets.get("web") or secrets.get("installed") or {}
-    client_id = web_or_installed.get("client_id", "")
-    client_secret = web_or_installed.get("client_secret", "")
-    token_uri = web_or_installed.get("token_uri", "https://oauth2.googleapis.com/token")
+    # Try client_secrets.json first, then fall back to env vars
+    secrets_path = Path(config.YOUTUBE_CLIENT_SECRETS)
+    if secrets_path.exists():
+        with open(secrets_path) as f:
+            secrets = json.load(f)
+        web_or_installed = secrets.get("web") or secrets.get("installed") or {}
+        client_id = web_or_installed.get("client_id", "")
+        client_secret = web_or_installed.get("client_secret", "")
+        token_uri = web_or_installed.get("token_uri", "https://oauth2.googleapis.com/token")
+    else:
+        # Railway / server mode: read from env vars
+        import os
+        client_id = os.getenv("YOUTUBE_CLIENT_ID", "")
+        client_secret = os.getenv("YOUTUBE_CLIENT_SECRET", "")
+        token_uri = "https://oauth2.googleapis.com/token"
+        if not client_id or not client_secret:
+            logger.warning("client_secrets.json not found and YOUTUBE_CLIENT_ID/SECRET not set")
+            return None
 
     creds = Credentials(
         token=None,
