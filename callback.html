@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CuteDaily Bot - TikTok Callback</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 600px; margin: 100px auto; text-align: center; }
+        .code { background: #f0f0f0; padding: 20px; border-radius: 10px; font-size: 18px; word-break: break-all; }
+        h1 { color: #ff6b9d; }
+    </style>
+</head>
+<body>
+    <h1>Autentificare reusita!</h1>
+    <p>Codul tau de autorizare:</p>
+    <div class="code" id="code">Se incarca...</div>
+    <p>Copiaza codul de mai sus si trimite-l!</p>
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const code = params.get('code');
+        if (code) {
+            document.getElementById('code').innerText = code;
+        } else {
+            document.getElementById('code').innerText = 'Eroare - nu s-a primit codul!';
+        }
+    </script>
+</body>
+</html>
