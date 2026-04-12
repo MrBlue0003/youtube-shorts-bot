@@ -4,10 +4,11 @@ main.py — Daily orchestrator for the YouTube Shorts bot.
 Steps:
   1. Validate config
   2. Check Runway credit threshold
-  3. Generate clips (runway_generate.py)
-  4. Assemble Short (assemble.py)
-  5. Upload to YouTube (upload.py)
-  6. Log result and print terminal notification
+  3. Ensure music library (download_music.py)
+  4. Generate clips (runway_generate.py)
+  5. Assemble Short (assemble.py)
+  6. Upload to YouTube (upload.py)
+  7. Log result and print terminal notification
 """
 
 import json
@@ -21,6 +22,7 @@ import config
 from scripts.runway_generate import generate_clips, get_total_credits_used, pick_prompt
 from scripts.assemble import assemble
 from scripts.upload import upload_short
+from scripts.download_music import download_music
 
 # ── Logging setup ──────────────────────────────────────────────────────────────
 LOG_FILE = config.LOGS_DIR / "daily_log.txt"
@@ -74,8 +76,17 @@ def step_check_credits() -> None:
     )
 
 
+def step_ensure_music() -> None:
+    print_banner("STEP 3 — Ensure Music Library")
+    tracks = download_music(count=5)
+    if tracks:
+        logger.info(f"Music library OK: {len(tracks)} track(s) available")
+    else:
+        logger.warning("No music tracks available — Short will have no audio")
+
+
 def step_generate(prompt_entry: dict) -> list[Path]:
-    print_banner("STEP 3 — Generate Clips")
+    print_banner("STEP 4 — Generate Clips")
     clips = generate_clips(
         prompt_entry=prompt_entry,
         clip_count=config.RUNWAY_CLIPS_PER_SHORT,
@@ -86,7 +97,7 @@ def step_generate(prompt_entry: dict) -> list[Path]:
 
 
 def step_assemble(clip_paths: list[Path], output_name: str) -> Path:
-    print_banner("STEP 4 — Assemble Short")
+    print_banner("STEP 5 — Assemble Short")
     short_path = assemble(clip_paths=clip_paths, output_name=output_name)
     size_mb = short_path.stat().st_size / (1024 * 1024)
     logger.info(f"Short assembled: {short_path.name} ({size_mb:.1f} MB)")
@@ -94,7 +105,7 @@ def step_assemble(clip_paths: list[Path], output_name: str) -> Path:
 
 
 def step_upload(short_path: Path, prompt_entry: dict) -> str:
-    print_banner("STEP 5 — Upload to YouTube")
+    print_banner("STEP 6 — Upload to YouTube")
     video_id = upload_short(
         video_path=short_path,
         prompt_entry=prompt_entry,
@@ -148,6 +159,7 @@ def main() -> int:
     try:
         step_validate()
         step_check_credits()
+        step_ensure_music()
 
         # Pick a prompt once and reuse across steps for consistent metadata
         prompt_entry = pick_prompt()
