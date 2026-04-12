@@ -145,10 +145,41 @@ class RunwayClient:
 
 # ── Main generation logic ──────────────────────────────────────────────────────
 
+def _current_season() -> str:
+    """Return the current meteorological season based on the current month."""
+    month = datetime.now().month
+    if month in (3, 4, 5):
+        return "spring"
+    elif month in (6, 7, 8):
+        return "summer"
+    elif month in (9, 10, 11):
+        return "autumn"
+    else:
+        return "winter"
+
+
 def pick_prompt() -> dict:
+    """Pick a seasonal prompt. Prefers prompts matching the current season,
+    falls back to 'any' prompts if no seasonal ones exist."""
     with open(PROMPTS_FILE, encoding="utf-8") as f:
         data = json.load(f)
-    return random.choice(data["prompts"])
+
+    season = _current_season()
+    all_prompts = data["prompts"]
+
+    # Prefer prompts that explicitly match this season
+    seasonal = [p for p in all_prompts if season in p.get("seasons", ["any"])]
+    # Also allow generic prompts
+    generic = [p for p in all_prompts if p.get("seasons", ["any"]) == ["any"]]
+
+    # 70% chance to pick a seasonal prompt, 30% generic (keeps variety)
+    pool = seasonal if seasonal and random.random() < 0.7 else (seasonal + generic)
+    if not pool:
+        pool = all_prompts  # ultimate fallback
+
+    chosen = random.choice(pool)
+    logger.info(f"Season: {season} | Pool: {len(pool)} prompts ({len(seasonal)} seasonal + {len(generic)} generic)")
+    return chosen
 
 
 def generate_clips(
