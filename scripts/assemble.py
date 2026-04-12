@@ -40,6 +40,10 @@ def run(cmd: list[str], check: bool = True) -> subprocess.CompletedProcess:
     return result
 
 
+# Shared ffmpeg flags to limit memory usage on constrained servers (Railway)
+_ENCODE_FLAGS = ["-threads", "2", "-preset", "veryfast", "-bufsize", "4M"]
+
+
 def get_duration(path: Path) -> float:
     """Return video duration in seconds using ffprobe."""
     cmd = [
@@ -119,7 +123,7 @@ def assemble(
                 "-i", str(clip),
                 "-vf", scale_filter(),
                 "-c:v", "libx264",
-                "-preset", "fast",
+                *_ENCODE_FLAGS,
                 "-crf", "23",
                 "-an",   # strip audio from individual clips
                 "-movflags", "+faststart",
@@ -202,7 +206,7 @@ def assemble(
                 "-map", "[v]",
                 "-map", "[a]",
                 "-c:v", "libx264",
-                "-preset", "slow",
+                *_ENCODE_FLAGS,
                 "-crf", "22",
                 "-profile:v", "high",
                 "-level", "4.1",
@@ -224,7 +228,7 @@ def assemble(
                 "-i", str(concat_out),
                 "-vf", video_filter,
                 "-c:v", "libx264",
-                "-preset", "slow",
+                *_ENCODE_FLAGS,
                 "-crf", "22",
                 "-profile:v", "high",
                 "-level", "4.1",
@@ -259,14 +263,14 @@ def _compress_to_target(src: Path, target_mb: float) -> Path:
         # Pass 1
         run([
             FFMPEG, "-y", "-i", str(src),
-            "-c:v", "libx264", "-b:v", f"{video_bitrate}k",
+            "-c:v", "libx264", *_ENCODE_FLAGS, "-b:v", f"{video_bitrate}k",
             "-pass", "1", "-passlogfile", str(passlog),
             "-an", "-f", "null", "/dev/null",
         ])
         # Pass 2
         run([
             FFMPEG, "-y", "-i", str(src),
-            "-c:v", "libx264", "-b:v", f"{video_bitrate}k",
+            "-c:v", "libx264", *_ENCODE_FLAGS, "-b:v", f"{video_bitrate}k",
             "-pass", "2", "-passlogfile", str(passlog),
             "-c:a", "aac", "-b:a", f"{audio_bitrate}k",
             "-movflags", "+faststart",
