@@ -109,7 +109,7 @@ def step_upload(short_path: Path, prompt_entry: dict) -> str:
     video_id = upload_short(
         video_path=short_path,
         prompt_entry=prompt_entry,
-        wait_for_schedule=True,
+        wait_for_schedule=False,  # cron schedule controls timing (3x/day)
     )
     logger.info(f"Uploaded! https://www.youtube.com/watch?v={video_id}")
     return video_id

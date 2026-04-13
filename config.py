@@ -72,18 +72,13 @@ YOUTUBE_CHANNEL_ID: str = os.getenv("YOUTUBE_CHANNEL_ID", "")
 VIDEO_WIDTH: int = int(os.getenv("VIDEO_WIDTH", "1080"))
 VIDEO_HEIGHT: int = int(os.getenv("VIDEO_HEIGHT", "1920"))
 VIDEO_FPS: int = int(os.getenv("VIDEO_FPS", "30"))
-SHORT_MIN_DURATION: int = int(os.getenv("SHORT_MIN_DURATION", "30"))
-SHORT_MAX_DURATION: int = int(os.getenv("SHORT_MAX_DURATION", "45"))
+SHORT_MIN_DURATION: int = int(os.getenv("SHORT_MIN_DURATION", "5"))
+SHORT_MAX_DURATION: int = int(os.getenv("SHORT_MAX_DURATION", "60"))
 
 # ── Runway settings ────────────────────────────────────────────────────────────
-RUNWAY_CLIP_DURATION: int = int(os.getenv("RUNWAY_CLIP_DURATION", "5"))   # seconds per clip
-RUNWAY_CLIPS_PER_SHORT: int = int(os.getenv("RUNWAY_CLIPS_PER_SHORT", "4"))  # 4 × 5s = 20s base
+RUNWAY_CLIP_DURATION: int = int(os.getenv("RUNWAY_CLIP_DURATION", "10"))  # 10s — single clip per short
+RUNWAY_CLIPS_PER_SHORT: int = int(os.getenv("RUNWAY_CLIPS_PER_SHORT", "1"))  # 1 clip, post 3x/day
 RUNWAY_MIN_CREDITS: int = int(os.getenv("RUNWAY_MIN_CREDITS", "75"))
-
-# ── Upload schedule ────────────────────────────────────────────────────────────
-UPLOAD_TIMEZONE: str = os.getenv("UPLOAD_TIMEZONE", "Europe/Bucharest")
-UPLOAD_HOUR: int = int(os.getenv("UPLOAD_HOUR", "18"))
-UPLOAD_MINUTE: int = int(os.getenv("UPLOAD_MINUTE", "30"))
 
 # ── Notifications ──────────────────────────────────────────────────────────────
 TELEGRAM_BOT_TOKEN: str = os.getenv("TELEGRAM_BOT_TOKEN", "")
