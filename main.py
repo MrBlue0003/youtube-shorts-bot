@@ -78,7 +78,7 @@ def step_check_credits() -> None:
 
 def step_ensure_music() -> None:
     print_banner("STEP 3 — Ensure Music Library")
-    tracks = download_music(count=5)
+    tracks = download_music(count=15)
     if tracks:
         logger.info(f"Music library OK: {len(tracks)} track(s) available")
     else:
