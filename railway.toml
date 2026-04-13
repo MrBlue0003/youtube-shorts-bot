@@ -8,11 +8,10 @@ builder = "DOCKERFILE"
 dockerfilePath = "Dockerfile"
 
 [deploy]
-# Cron job: 3x per day, uploads immediately after generation
+# Cron job: 2x per day, uploads immediately after generation
 # 07:00 UTC = 10:00 Bucharest (morning)
-# 13:00 UTC = 16:00 Bucharest (afternoon)
-# 18:00 UTC = 21:00 Bucharest (evening)
-cronSchedule = "0 7,13,18 * * *"
+# 16:00 UTC = 19:00 Bucharest (evening)
+cronSchedule = "0 7,16 * * *"
 startCommand = "python main.py"
 restartPolicyType = "ON_FAILURE"
 restartPolicyMaxRetries = 3

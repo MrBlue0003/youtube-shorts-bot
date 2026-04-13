@@ -76,8 +76,8 @@ SHORT_MIN_DURATION: int = int(os.getenv("SHORT_MIN_DURATION", "5"))
 SHORT_MAX_DURATION: int = int(os.getenv("SHORT_MAX_DURATION", "60"))
 
 # ── Runway settings ────────────────────────────────────────────────────────────
-RUNWAY_CLIP_DURATION: int = int(os.getenv("RUNWAY_CLIP_DURATION", "10"))  # 10s — single clip per short
-RUNWAY_CLIPS_PER_SHORT: int = int(os.getenv("RUNWAY_CLIPS_PER_SHORT", "1"))  # 1 clip, post 3x/day
+RUNWAY_CLIP_DURATION: int = int(os.getenv("RUNWAY_CLIP_DURATION", "5"))   # 5s — single clip per short
+RUNWAY_CLIPS_PER_SHORT: int = int(os.getenv("RUNWAY_CLIPS_PER_SHORT", "1"))  # 1 clip, post 2x/day
 RUNWAY_MIN_CREDITS: int = int(os.getenv("RUNWAY_MIN_CREDITS", "75"))
 
 # ── Notifications ──────────────────────────────────────────────────────────────
