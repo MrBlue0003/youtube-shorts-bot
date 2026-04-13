@@ -11,6 +11,7 @@ Pipeline:
 """
 
 import glob
+import json
 import logging
 import os
 import random
@@ -67,13 +68,52 @@ def get_duration(path: Path) -> float:
         return float(result2.stdout.strip() or "0")
 
 
+USED_MUSIC_FILE = config.LOGS_DIR / "used_music.json"
+
+
+def _load_used_tracks() -> list[str]:
+    if USED_MUSIC_FILE.exists():
+        with open(USED_MUSIC_FILE) as f:
+            return json.load(f).get("used", [])
+    return []
+
+
+def _save_used_track(name: str, total: int) -> None:
+    used = _load_used_tracks()
+    used.append(name)
+    # Pastreaza doar ultimele (total - 1) track-uri folosite
+    # Astfel mereu exista cel putin unul disponibil
+    used = used[-(max(total - 1, 1)):]
+    with open(USED_MUSIC_FILE, "w") as f:
+        json.dump({"used": used}, f, indent=2)
+
+
 def get_music_track() -> Path | None:
-    """Return a random music file from music/, or None if folder is empty."""
-    music_files = list(config.MUSIC_DIR.glob("*.mp3")) + list(config.MUSIC_DIR.glob("*.wav")) + list(config.MUSIC_DIR.glob("*.m4a"))
+    """Return a music file that hasn't been used recently, rotating through all tracks."""
+    music_files = (
+        list(config.MUSIC_DIR.glob("*.mp3")) +
+        list(config.MUSIC_DIR.glob("*.wav")) +
+        list(config.MUSIC_DIR.glob("*.m4a"))
+    )
     if not music_files:
         logger.warning("No music files found in music/ — exporting without audio.")
         return None
-    return random.choice(music_files)
+
+    used = _load_used_tracks()
+    used_names = set(used)
+
+    # Alege din track-urile nefolosite inca
+    available = [f for f in music_files if f.name not in used_names]
+
+    # Daca toate au fost folosite, reseteaza si ia din toate
+    if not available:
+        logger.info("Toate track-urile au fost folosite — resetez rotatia.")
+        available = music_files
+
+    chosen = random.choice(available)
+    _save_used_track(chosen.name, len(music_files))
+    logger.info(f"Music track ales: {chosen.name} ({len(available)} disponibile din {len(music_files)})")
+    return chosen
 
 
 def scale_filter(width: int = config.VIDEO_WIDTH, height: int = config.VIDEO_HEIGHT) -> str:
