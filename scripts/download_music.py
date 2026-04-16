@@ -5,12 +5,16 @@ Surse (în ordine):
   1. Pixabay API  — dacă PIXABAY_API_KEY e setat în .env
   2. ccMixter API — gratuit, fără cheie, CC-BY license
   3. Pixabay CDN  — URL-uri directe testate (fallback final)
+
+Refresh săptămânal: la fiecare 7 zile șterge melodiile vechi și descarcă altele noi.
 """
 
+import json
 import logging
 import sys
 import time
 import warnings
+from datetime import datetime, timezone
 from pathlib import Path
 
 import requests
@@ -23,6 +27,10 @@ import config
 logger = logging.getLogger(__name__)
 
 MUSIC_DIR = config.MUSIC_DIR
+REFRESH_FILE = config.LOGS_DIR / "music_refresh.json"
+USED_MUSIC_FILE = config.LOGS_DIR / "used_music.json"
+REFRESH_DAYS = 7
+
 HEADERS = {
     "User-Agent": (
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
@@ -32,24 +40,78 @@ HEADERS = {
 
 # ── Surse ──────────────────────────────────────────────────────────────────────
 
-# ccMixter tags care se potrivesc pentru cute animal content
+PIXABAY_QUERIES = [
+    "cute ukulele",
+    "kawaii lofi",
+    "upbeat cheerful",
+    "acoustic happy",
+    "playful piano",
+    "fun children music",
+    "whimsical background",
+    "lighthearted instrumental",
+    "positive uplifting",
+    "cute animals music",
+]
+
 CCMIXTER_QUERIES = [
     "ukulele",
     "lofi",
-    "cute",
     "cheerful",
     "acoustic+guitar",
     "playful",
     "upbeat",
     "happy",
-    "kawaii",
+    "whimsical",
+    "fun",
+    "instrumental",
+    "light",
+    "carefree",
 ]
 
-# Pixabay CDN URLs testate manual (fallback, CC0)
+# Pixabay CDN URLs testate manual (CC0) — fallback diversificat
 PIXABAY_FALLBACK_URLS = [
-    ("pixabay_kawaii_01", "https://cdn.pixabay.com/audio/2021/08/04/audio_0625c1539c.mp3"),
-    ("pixabay_upbeat_02", "https://cdn.pixabay.com/audio/2022/08/02/audio_884fe92c21.mp3"),
+    ("pb_cute_01", "https://cdn.pixabay.com/audio/2022/03/10/audio_270f49d21d.mp3"),
+    ("pb_lofi_02", "https://cdn.pixabay.com/audio/2022/01/18/audio_d0a13f69d2.mp3"),
+    ("pb_ukulele_03", "https://cdn.pixabay.com/audio/2022/05/27/audio_1808fbf07a.mp3"),
+    ("pb_happy_04", "https://cdn.pixabay.com/audio/2021/11/25/audio_91b32e02de.mp3"),
+    ("pb_playful_05", "https://cdn.pixabay.com/audio/2022/10/25/audio_946b365bec.mp3"),
+    ("pb_whimsical_06", "https://cdn.pixabay.com/audio/2022/08/23/audio_d16737dc28.mp3"),
+    ("pb_acoustic_07", "https://cdn.pixabay.com/audio/2022/03/15/audio_8cb749b05d.mp3"),
+    ("pb_cheerful_08", "https://cdn.pixabay.com/audio/2022/06/08/audio_c8b8e83d76.mp3"),
 ]
+
+
+# ── Weekly refresh ─────────────────────────────────────────────────────────────
+
+def _should_refresh() -> bool:
+    if not REFRESH_FILE.exists():
+        return True
+    try:
+        with open(REFRESH_FILE, encoding="utf-8") as f:
+            data = json.load(f)
+        last = datetime.fromisoformat(data.get("last_refresh", "2000-01-01T00:00:00+00:00"))
+        if last.tzinfo is None:
+            last = last.replace(tzinfo=timezone.utc)
+        days_since = (datetime.now(timezone.utc) - last).days
+        logger.info(f"Music last refreshed {days_since} day(s) ago.")
+        return days_since >= REFRESH_DAYS
+    except Exception:
+        return True
+
+
+def _mark_refreshed() -> None:
+    config.LOGS_DIR.mkdir(parents=True, exist_ok=True)
+    with open(REFRESH_FILE, "w", encoding="utf-8") as f:
+        json.dump({"last_refresh": datetime.now(timezone.utc).isoformat()}, f)
+
+
+def _clear_music_library() -> None:
+    logger.info("Sterg melodiile vechi pentru refresh saptamanal...")
+    for ext in ("*.mp3", "*.wav", "*.m4a"):
+        for f in MUSIC_DIR.glob(ext):
+            f.unlink(missing_ok=True)
+    USED_MUSIC_FILE.unlink(missing_ok=True)
+    logger.info("Biblioteca muzicala curatata.")
 
 
 # ── Pixabay API ────────────────────────────────────────────────────────────────
@@ -62,18 +124,13 @@ def _from_pixabay(count: int) -> list[Path]:
         return []
 
     tracks: list[Path] = []
-    queries = ["ukulele cute", "kawaii lofi", "upbeat cheerful", "acoustic happy"]
-
-    for q in queries:
+    for q in PIXABAY_QUERIES:
         if len(tracks) >= count:
             break
         try:
             r = requests.get(
                 "https://pixabay.com/api/",
-                params={
-                    "key": api_key, "q": q,
-                    "media_type": "music", "per_page": 5,
-                },
+                params={"key": api_key, "q": q, "media_type": "music", "per_page": 5},
                 headers=HEADERS, timeout=15,
             )
             hits = r.json().get("hits", [])
@@ -85,7 +142,7 @@ def _from_pixabay(count: int) -> list[Path]:
                     continue
                 name = q.replace(" ", "_") + f"_{len(tracks)+1:02d}.mp3"
                 dest = MUSIC_DIR / name
-                if _download_file(url, dest):
+                if not dest.exists() and _download_file(url, dest):
                     tracks.append(dest)
         except Exception as e:
             logger.warning(f"Pixabay API eroare pentru '{q}': {e}")
@@ -111,7 +168,6 @@ def _from_ccmixter(count: int) -> list[Path]:
             if r.status_code != 200:
                 continue
 
-            # ccMixter trimite text/plain — trebuie json.loads fortat
             import json as _json
             try:
                 items = _json.loads(r.text)
@@ -122,13 +178,10 @@ def _from_ccmixter(count: int) -> list[Path]:
                 if len(tracks) >= count:
                     break
 
-                # Filtram licente non-comerciale (NC) — nu sunt permise pe YouTube monetizat
                 license_name = item.get("license_name", "")
                 if "Noncommercial" in license_name or "NonCommercial" in license_name:
-                    logger.debug(f"Skip NC track: {item.get('upload_name')} ({license_name})")
                     continue
 
-                # Gasim URL-ul de download din files[]
                 files = item.get("files", [])
                 dl_url = ""
                 for f in files:
@@ -144,10 +197,10 @@ def _from_ccmixter(count: int) -> list[Path]:
                 track_name = item.get("upload_name", f"track_{len(tracks)+1}")
                 user = item.get("user_name", "unknown")
                 safe_name = "".join(c if c.isalnum() or c in "-_ " else "_" for c in track_name)
-                dest = MUSIC_DIR / f"ccmixter_{safe_name[:35].strip()}_{len(tracks)+1:02d}.mp3"
+                dest = MUSIC_DIR / f"ccm_{safe_name[:30].strip()}_{len(tracks)+1:02d}.mp3"
 
                 logger.info(f"  ccMixter: '{track_name}' by {user} [{license_name}]")
-                if _download_file(dl_url, dest, verify_ssl=False):
+                if not dest.exists() and _download_file(dl_url, dest, verify_ssl=False):
                     tracks.append(dest)
                     time.sleep(0.5)
 
@@ -189,12 +242,9 @@ def _download_file(url: str, dest: Path, verify_ssl: bool = True) -> bool:
             logger.debug(f"Raspuns HTML/XML in loc de audio: {url}")
             return False
 
-        total = int(r.headers.get("content-length", 0))
         with open(dest, "wb") as f:
-            downloaded = 0
             for chunk in r.iter_content(chunk_size=65536):
                 f.write(chunk)
-                downloaded += len(chunk)
 
         size_kb = dest.stat().st_size // 1024
         if size_kb < 10:
@@ -213,36 +263,37 @@ def _download_file(url: str, dest: Path, verify_ssl: bool = True) -> bool:
 
 # ── Public interface ───────────────────────────────────────────────────────────
 
-def download_music(count: int = 5) -> list[Path]:
+def download_music(count: int = 15, force_refresh: bool = False) -> list[Path]:
     """
     Descarcă `count` melodii royalty-free în music/.
-    Returnează lista de Path-uri descărcate.
+    La fiecare 7 zile șterge melodiile vechi și descarcă altele noi.
     """
     MUSIC_DIR.mkdir(parents=True, exist_ok=True)
+
+    if force_refresh or _should_refresh():
+        _clear_music_library()
+        _mark_refreshed()
+
     already = list(MUSIC_DIR.glob("*.mp3")) + list(MUSIC_DIR.glob("*.wav"))
     if len(already) >= count:
         logger.info(f"music/ are deja {len(already)} melodii — skip download.")
-        return already[:count]
+        return already
 
     needed = count - len(already)
     tracks: list[Path] = list(already)
-
     logger.info(f"Descarc {needed} melodii noi (din {count} necesare)...")
 
-    # 1. Pixabay API (dacă key disponibil)
     if needed > 0:
         new = _from_pixabay(needed)
         tracks.extend(new)
         needed -= len(new)
 
-    # 2. ccMixter
     if needed > 0:
-        logger.info("Sursa: ccMixter API (CC-BY, fara cheie)...")
+        logger.info("Sursa: ccMixter API...")
         new = _from_ccmixter(needed)
         tracks.extend(new)
         needed -= len(new)
 
-    # 3. Pixabay CDN fallback
     if needed > 0:
         logger.info("Sursa: Pixabay CDN (fallback)...")
         new = _from_pixabay_cdn(needed)
@@ -255,11 +306,9 @@ def download_music(count: int = 5) -> list[Path]:
 # ── CLI ────────────────────────────────────────────────────────────────────────
 
 if __name__ == "__main__":
-    logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
-    )
-    tracks = download_music(count=5)
+    logging.basicConfig(level=logging.INFO,
+                        format="%(asctime)s [%(levelname)s] %(name)s: %(message)s")
+    tracks = download_music(count=15, force_refresh=True)
     print(f"\n{len(tracks)} melodii in music/:")
     for t in tracks:
         print(f"  {t.name} ({t.stat().st_size // 1024} KB)")
