@@ -1,0 +1,58 @@
+name: Cute Critters Daily Post
+
+on:
+  schedule:
+    # 14:30 UTC = 17:30 Bucharest (EEST) — bot waits internally until 18:30
+    - cron: '30 14 * * *'
+  workflow_dispatch:   # allow manual trigger from GitHub UI
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y ffmpeg
+          ffmpeg -version | head -1
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install Python dependencies
+        run: pip install -r requirements.txt
+
+      - name: Create required directories
+        run: mkdir -p logs videos shorts music prompts
+
+      - name: Download background music
+        run: python scripts/download_music.py
+
+      - name: Run bot
+        env:
+          RUNWAY_API_KEY:        ${{ secrets.RUNWAY_API_KEY }}
+          RUNWAY_API_BASE:       https://api.dev.runwayml.com/v1
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+          YOUTUBE_CHANNEL_ID:    ${{ secrets.YOUTUBE_CHANNEL_ID }}
+          YOUTUBE_CLIENT_ID:     ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          UPLOAD_TIMEZONE:       Europe/Bucharest
+          UPLOAD_HOUR:           18
+          UPLOAD_MINUTE:         30
+        run: python main.py
+
+      - name: Upload logs on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bot-logs-${{ github.run_id }}
+          path: logs/
+          retention-days: 7
