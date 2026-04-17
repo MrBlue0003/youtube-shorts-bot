@@ -1,0 +1,33 @@
+{
+  "total_used": 2000,
+  "sessions": [
+    {
+      "timestamp": "2026-04-09T19:59:28.104661+00:00",
+      "prompt_id": 30,
+      "clips_generated": 4,
+      "credits_used": 500,
+      "total_used_cumulative": 500
+    },
+    {
+      "timestamp": "2026-04-10T16:47:52.584427+00:00",
+      "prompt_id": 10,
+      "clips_generated": 4,
+      "credits_used": 500,
+      "total_used_cumulative": 1000
+    },
+    {
+      "timestamp": "2026-04-12T11:07:28.926326+00:00",
+      "prompt_id": 25,
+      "clips_generated": 4,
+      "credits_used": 500,
+      "total_used_cumulative": 1500
+    },
+    {
+      "timestamp": "2026-04-13T19:02:12.696014+00:00",
+      "prompt_id": 8,
+      "clips_generated": 4,
+      "credits_used": 500,
+      "total_used_cumulative": 2000
+    }
+  ]
+}

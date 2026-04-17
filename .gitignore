@@ -10,9 +10,11 @@ videos/*
 shorts/*
 !shorts/.gitkeep
 
-# Logs — pastreaza folderul
+# Logs — pastreaza folderul si fisierele de tracking
 logs/*
 !logs/.gitkeep
+!logs/uploaded.json
+!logs/credits.json
 
 # Music — pastreaza folderul (melodiile se descarca automat)
 music/*
