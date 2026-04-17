@@ -13,6 +13,7 @@ Steps:
 
 import json
 import logging
+import subprocess
 import sys
 import traceback
 from datetime import datetime, timezone
@@ -131,6 +132,31 @@ def notify_terminal(success: bool, video_id: str = "", error: str = "") -> None:
     print(sep)
 
 
+def _save_logs_to_repo() -> None:
+    """Commit and push updated logs back to repo so uploaded.json persists across runs."""
+    try:
+        repo_dir = Path(__file__).parent
+        def git(*args):
+            subprocess.run(["git", *args], cwd=str(repo_dir), check=True,
+                           capture_output=True, text=True)
+        git("config", "user.email", "cutedaily-bot@github.com")
+        git("config", "user.name", "CuteDaily Bot")
+        git("add", "logs/uploaded.json", "logs/credits.json")
+        # Only commit if there are staged changes
+        diff = subprocess.run(
+            ["git", "diff", "--staged", "--quiet"],
+            cwd=str(repo_dir), capture_output=True
+        )
+        if diff.returncode != 0:
+            git("commit", "-m", "chore: update upload log [skip ci]")
+            git("push")
+            logger.info("Upload log saved to repo.")
+        else:
+            logger.info("No log changes to commit.")
+    except Exception as e:
+        logger.warning(f"Could not save logs to repo: {e}")
+
+
 def notify_telegram(msg: str) -> None:
     """Optional: send a Telegram notification."""
     if not (config.TELEGRAM_BOT_TOKEN and config.TELEGRAM_CHAT_ID):
@@ -186,6 +212,7 @@ def main() -> int:
             f"<a href='https://www.youtube.com/watch?v={video_id}'>Watch it</a>\n"
             f"Animal: {prompt_entry['animal']} | Action: {prompt_entry['action']}"
         )
+        _save_logs_to_repo()
         return 0
 
     except Exception as e:
