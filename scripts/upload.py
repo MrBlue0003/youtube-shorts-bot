@@ -319,6 +319,60 @@ def upload_short(
                 raise
 
 
+def upload_compilation(video_path: Path, month_str: str, youtube=None) -> str:
+    """Upload a monthly Best Of compilation. Returns video_id."""
+    if not video_path.exists():
+        raise FileNotFoundError(f"Compilation video not found: {video_path}")
+
+    if youtube is None:
+        youtube = get_youtube_client()
+
+    title = f"Best of {month_str} \U0001f43e | CuteDaily Compilation"
+    if len(title) > 100:
+        title = title[:97] + "\u2026"
+
+    description = (
+        f"\U0001f43e Best of {month_str} \u2014 cutest animals of the month!\n\n"
+        "Our most-watched cute animal animations all in one place \U0001f495\n\n"
+        "#cuteanimals #compilation #shorts #kawaii #animatedanimals "
+        "#cuteanimals2024 #bestof #funny\n\n"
+        "\u2728 Subscribe for daily cute animal animations!\n"
+        "\U0001f514 Turn on notifications so you never miss one."
+    )
+
+    body = {
+        "snippet": {
+            "title": title,
+            "description": description,
+            "tags": ["best of", "compilation", "cute animals", "shorts",
+                     "kawaii", "animated animals", month_str.lower()],
+            "categoryId": "15",
+            "defaultLanguage": "en",
+        },
+        "status": {
+            "privacyStatus": "public",
+            "selfDeclaredMadeForKids": False,
+            "madeForKids": False,
+        },
+    }
+
+    media = MediaFileUpload(
+        str(video_path), mimetype="video/mp4", resumable=True, chunksize=256 * 1024
+    )
+
+    logger.info(f"Uploading compilation: {title}")
+    request = youtube.videos().insert(part="snippet,status", body=body, media_body=media)
+    response = None
+    while response is None:
+        status, response = request.next_chunk()
+        if status:
+            logger.info(f"Compilation upload: {int(status.progress() * 100)}%")
+
+    video_id = response["id"]
+    logger.info(f"Compilation uploaded: https://www.youtube.com/watch?v={video_id}")
+    return video_id
+
+
 def _record_upload(video_id: str, title: str, video_path: str) -> None:
     if UPLOADED_FILE.exists():
         with open(UPLOADED_FILE) as f:

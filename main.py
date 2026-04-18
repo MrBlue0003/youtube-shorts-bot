@@ -24,6 +24,7 @@ from scripts.runway_generate import generate_clips, get_total_credits_used, pick
 from scripts.assemble import assemble
 from scripts.upload import upload_short
 from scripts.download_music import download_music
+import scripts.monthly_compilation as monthly_compilation
 
 # ── Logging setup ──────────────────────────────────────────────────────────────
 LOG_FILE = config.LOGS_DIR / "daily_log.txt"
@@ -212,6 +213,25 @@ def main() -> int:
             f"<a href='https://www.youtube.com/watch?v={video_id}'>Watch it</a>\n"
             f"Animal: {prompt_entry['animal']} | Action: {prompt_entry['action']}"
         )
+
+        # Monthly Best Of compilation — runs automatically on day 1-3 of each month
+        uploaded_file = config.LOGS_DIR / "uploaded.json"
+        if monthly_compilation.should_run(uploaded_file):
+            logger.info("Monthly Best Of compilation triggered")
+            try:
+                comp_id = monthly_compilation.run(
+                    uploaded_file,
+                    config.SHORTS_DIR,
+                )
+                if comp_id:
+                    logger.info(f"Compilation: https://www.youtube.com/watch?v={comp_id}")
+                    notify_telegram(
+                        f"🎬 <b>Monthly compilation uploaded!</b>\n"
+                        f"<a href='https://www.youtube.com/watch?v={comp_id}'>Watch it</a>"
+                    )
+            except Exception as comp_err:
+                logger.error(f"Monthly compilation failed (non-fatal): {comp_err}")
+
         _save_logs_to_repo()
         return 0
 
