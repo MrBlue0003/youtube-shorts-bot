@@ -24,9 +24,8 @@ from pathlib import Path
 
 logger = logging.getLogger("monthly_compilation")
 
-CLIP_DURATION_SEC = 35         # average CuteDaily short ~30-45 s
-TARGET_DURATION_SEC = 30 * 60  # aim for ~30 min compilation
-MAX_CLIPS = TARGET_DURATION_SEC // CLIP_DURATION_SEC  # ~51
+# No clip limit — take everything posted last month
+MAX_CLIPS = None
 
 
 # ── Helpers ────────────────────────────────────────────────────────────────────
@@ -171,9 +170,9 @@ def run(uploaded_file: Path, output_base: Path) -> str | None:
         v["_views"] = view_counts.get(v.get("video_id", ""), 0)
 
     videos.sort(key=lambda v: v["_views"], reverse=True)
-    selected = videos[:MAX_CLIPS]
+    selected = videos  # take all — no cap
 
-    logger.info(f"Selected {len(selected)} clip(s) (max {MAX_CLIPS} for ~30 min)")
+    logger.info(f"Selected all {len(selected)} clip(s) from last month")
     for v in selected:
         logger.info(f"  {v['video_id']}  {v['_views']:>6} views  {v.get('title', '')}")
 
