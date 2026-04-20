@@ -42,15 +42,21 @@ PROMPTS_FILE = config.PROMPTS_DIR / "animal_prompts.json"
 CATEGORY_ID = "15"
 
 TAGS = [
-    "shorts", "cute", "animals", "cuteanimals", "funnyanimals",
-    "kawaii", "2danimation", "animatedanimals", "cuteanimals2024",
-    "cozy", "satisfying", "funnyanimals2024", "animalshorts",
+    "shorts", "cute", "animals", "cute animals", "funny animals",
+    "kawaii", "2d animation", "animated animals", "cozy", "satisfying",
+    "animal lovers", "cute pets", "funny video", "trending", "viral",
+    "wholesome", "baby animals", "adorable", "animal shorts", "cuteness overload",
+    "fluffy animals", "pet videos", "animal videos", "funny pets", "cute video",
+    "daily cute", "animals of tiktok", "animal memes", "cutest animals",
 ]
 
 HASHTAGS = (
-    "#shorts #cute #animals #cuteanimals #funnyanimals "
-    "#kawaii #2danimation #animatedanimals #cozy #satisfying "
-    "#animallovers #cutepets #funnyvideo #trending"
+    "#Shorts #CuteAnimals #FunnyAnimals #Kawaii #AnimatedAnimals #CozyVibes "
+    "#Satisfying #AnimalLovers #CutePets #FunnyVideo #Trending #Viral "
+    "#Wholesome #BabyAnimals #Adorable #CutenessOverload #FluffyAnimals "
+    "#PetVideos #AnimalVideos #FunnyPets #CuteVideo #DailyCute #Cute "
+    "#AnimalsOfYouTube #AnimalMemes #CutestAnimals #2DAnimation #Cozy "
+    "#Animals #CuteAnimation"
 )
 
 
