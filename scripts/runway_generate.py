@@ -158,9 +158,22 @@ def _current_season() -> str:
         return "winter"
 
 
+def _get_recent_animals(n: int = 10) -> set[str]:
+    """Return the set of animals used in the last N uploads."""
+    uploaded_file = config.LOGS_DIR / "uploaded.json"
+    if not uploaded_file.exists():
+        return set()
+    try:
+        with open(uploaded_file, encoding="utf-8") as f:
+            data = json.load(f)
+        recent = data.get("uploads", [])[-n:]
+        return {u.get("animal", "").lower() for u in recent if u.get("animal")}
+    except Exception:
+        return set()
+
+
 def pick_prompt() -> dict:
-    """Pick a seasonal prompt. Prefers prompts matching the current season,
-    falls back to 'any' prompts if no seasonal ones exist."""
+    """Pick a seasonal prompt, avoiding animals used in the last 10 uploads."""
     with open(PROMPTS_FILE, encoding="utf-8") as f:
         data = json.load(f)
 
@@ -169,16 +182,26 @@ def pick_prompt() -> dict:
 
     # Prefer prompts that explicitly match this season
     seasonal = [p for p in all_prompts if season in p.get("seasons", ["any"])]
-    # Also allow generic prompts
-    generic = [p for p in all_prompts if p.get("seasons", ["any"]) == ["any"]]
+    generic  = [p for p in all_prompts if p.get("seasons", ["any"]) == ["any"]]
 
-    # 70% chance to pick a seasonal prompt, 30% generic (keeps variety)
+    # 70% chance to pick a seasonal prompt, 30% generic
     pool = seasonal if seasonal and random.random() < 0.7 else (seasonal + generic)
     if not pool:
-        pool = all_prompts  # ultimate fallback
+        pool = all_prompts
 
-    chosen = random.choice(pool)
-    logger.info(f"Season: {season} | Pool: {len(pool)} prompts ({len(seasonal)} seasonal + {len(generic)} generic)")
+    # Filter out recently used animals
+    recent_animals = _get_recent_animals(10)
+    fresh_pool = [p for p in pool if p.get("animal", "").lower() not in recent_animals]
+
+    if fresh_pool:
+        logger.info(f"Season: {season} | Fresh pool: {len(fresh_pool)} (excluded {len(recent_animals)} recent animals)")
+        chosen = random.choice(fresh_pool)
+    else:
+        # All animals are recent — fall back to least-recently-used
+        logger.warning("All animals recently used — picking from full pool")
+        chosen = random.choice(pool)
+
+    logger.info(f"Chosen: {chosen.get('animal')} / {chosen.get('action')}")
     return chosen
 
 

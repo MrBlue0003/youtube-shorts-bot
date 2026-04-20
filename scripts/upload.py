@@ -313,7 +313,8 @@ def upload_short(
 
             video_id = response["id"]
             logger.info(f"Upload complete! Video ID: {video_id}")
-            _record_upload(video_id, title, str(video_path))
+            animal = prompt_entry.get("animal", "") if prompt_entry else ""
+            _record_upload(video_id, title, str(video_path), animal=animal)
             return video_id
 
         except HttpError as e:
@@ -379,9 +380,9 @@ def upload_compilation(video_path: Path, month_str: str, youtube=None) -> str:
     return video_id
 
 
-def _record_upload(video_id: str, title: str, video_path: str) -> None:
+def _record_upload(video_id: str, title: str, video_path: str, animal: str = "") -> None:
     if UPLOADED_FILE.exists():
-        with open(UPLOADED_FILE) as f:
+        with open(UPLOADED_FILE, encoding="utf-8") as f:
             data = json.load(f)
     else:
         data = {"uploads": []}
@@ -390,11 +391,12 @@ def _record_upload(video_id: str, title: str, video_path: str) -> None:
         "timestamp": datetime.utcnow().isoformat() + "Z",
         "video_id": video_id,
         "title": title,
+        "animal": animal,
         "file": video_path,
         "url": f"https://www.youtube.com/watch?v={video_id}",
     })
 
-    with open(UPLOADED_FILE, "w") as f:
+    with open(UPLOADED_FILE, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=2)
     logger.info(f"Upload recorded in {UPLOADED_FILE}")
 

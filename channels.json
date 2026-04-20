@@ -1,0 +1,40 @@
+{
+  "channels": [
+    {
+      "name": "Cute Critters Daily",
+      "handle": "CuteCrittersDaily",
+      "id": "UC0Ps_4-7WgoVBbNgSNVZNoA",
+      "gmail": "relaxsound404@gmail.com",
+      "niche": "cute animals AI shorts",
+      "cost_per_month": 27,
+      "automated": true
+    },
+    {
+      "name": "Relax Sound",
+      "handle": "RelaxSound-l9g",
+      "id": "UCz-SmRhL2fMhy68Hd-H4IrA",
+      "gmail": "relaxsound404@gmail.com",
+      "niche": "relaxing sounds / ASMR",
+      "cost_per_month": 0,
+      "automated": false
+    },
+    {
+      "name": "Lumea Copiilor",
+      "handle": "LumeaCopiilor-f7q",
+      "id": "UCOPgJ4yX24z0nDvsEpVllJA",
+      "gmail": "lumeacopiilorveseli03@gmail.com",
+      "niche": "kids content",
+      "cost_per_month": 0,
+      "automated": false
+    },
+    {
+      "name": "QuickFacts Daily",
+      "handle": "QuickFacts-daily-q8o",
+      "id": "UCn77aaWOICUEEYIJoMN11qw",
+      "gmail": "relaxsound404@gmail.com",
+      "niche": "top 10 facts",
+      "cost_per_month": 3,
+      "automated": false
+    }
+  ]
+}

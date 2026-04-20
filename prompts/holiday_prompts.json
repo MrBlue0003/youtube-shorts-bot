@@ -1,0 +1,212 @@
+{
+  "holidays": [
+    {
+      "name": "new_year",
+      "display": "New Year's Day",
+      "fixed": {"month": 1, "day": 1},
+      "window_before": 3,
+      "window_after": 1,
+      "id": 101,
+      "animal": "cat",
+      "action": "new_year_celebration",
+      "title_template": "Happy New Year from this little {animal}! \ud83c\udf86",
+      "prompt": "cute 2D animated cat wearing a sparkly gold party hat, holding a colorful streamer, fireworks bursting in a night sky behind, confetti raining down, countdown clock showing midnight in background, flat design, pastel gold and deep blue colors, joyful sparkling eyes, no text, loop motion, 9:16 vertical, kawaii style"
+    },
+    {
+      "name": "chinese_new_year",
+      "display": "Chinese New Year",
+      "dates": {
+        "2026": {"month": 1, "day": 29},
+        "2027": {"month": 2, "day": 17},
+        "2028": {"month": 2, "day": 6}
+      },
+      "window_before": 3,
+      "window_after": 5,
+      "id": 102,
+      "animal": "panda",
+      "action": "chinese_new_year",
+      "title_template": "Gong Xi Fa Cai from this cute {animal}! \ud83d\udc09",
+      "prompt": "cute 2D animated panda wearing a red and gold silk outfit holding a glowing red lantern, golden coins and cherry blossom petals floating around, festive red envelope in paw, flat design, pastel red and gold colors, lunar new year decorations, warm festive glow, no text, loop motion, 9:16 vertical, kawaii style"
+    },
+    {
+      "name": "valentines_day",
+      "display": "Valentine's Day",
+      "fixed": {"month": 2, "day": 14},
+      "window_before": 4,
+      "window_after": 0,
+      "id": 103,
+      "animal": "bunny",
+      "action": "valentine",
+      "title_template": "Happy Valentine's Day from this sweet {animal}! \ud83d\udc9d",
+      "prompt": "cute 2D animated bunny holding a giant bouquet of pink and red roses with blushing rosy cheeks, hearts of all sizes floating and popping around, soft pink sparkles raining down, flat design, pastel pink and red colors, love letter envelope floating nearby, no text, loop motion, 9:16 vertical, kawaii style"
+    },
+    {
+      "name": "holi",
+      "display": "Holi",
+      "dates": {
+        "2026": {"month": 3, "day": 2},
+        "2027": {"month": 3, "day": 22},
+        "2028": {"month": 3, "day": 10}
+      },
+      "window_before": 1,
+      "window_after": 1,
+      "id": 104,
+      "animal": "elephant",
+      "action": "holi_festival",
+      "title_template": "Happy Holi from this colorful {animal}! \ud83c\udf08",
+      "prompt": "cute 2D animated baby elephant joyfully tossing colorful powder with its trunk, rainbow explosion of pink blue yellow green and orange dust clouds bursting in all directions, pure joy expression, flowers flying through the air, flat design, vibrant rainbow colors on pastel background, no text, loop motion, 9:16 vertical, kawaii style"
+    },
+    {
+      "name": "st_patricks_day",
+      "display": "St. Patrick's Day",
+      "fixed": {"month": 3, "day": 17},
+      "window_before": 2,
+      "window_after": 0,
+      "id": 105,
+      "animal": "frog",
+      "action": "st_patricks",
+      "title_template": "Happy St. Patrick's Day from this lucky {animal}! \ud83c\udf40",
+      "prompt": "cute 2D animated frog wearing a tiny green top hat and shamrock bow tie, dancing a jig at the end of a rainbow, pot of gold coins sparkling behind, four-leaf clovers and stars floating around, flat design, pastel green and gold colors, sunny Irish countryside vibe, no text, loop motion, 9:16 vertical, kawaii style"
+    },
+    {
+      "name": "easter",
+      "display": "Easter",
+      "dates": {
+        "2026": {"month": 4, "day": 5},
+        "2027": {"month": 3, "day": 28},
+        "2028": {"month": 4, "day": 16}
+      },
+      "window_before": 5,
+      "window_after": 2,
+      "id": 106,
+      "animal": "bunny",
+      "action": "easter",
+      "title_template": "Happy Easter from this adorable {animal}! \ud83d\udc23",
+      "prompt": "cute 2D animated bunny hopping through a spring meadow delivering colorful painted Easter eggs in a flower-woven basket, tiny yellow chick peeking out from a cracked egg, spring flowers blooming with each hop, butterflies fluttering, flat design, pastel rainbow and soft green colors, warm sunshine, no text, loop motion, 9:16 vertical, kawaii style"
+    },
+    {
+      "name": "earth_day",
+      "display": "Earth Day",
+      "fixed": {"month": 4, "day": 22},
+      "window_before": 2,
+      "window_after": 0,
+      "id": 107,
+      "animal": "bear",
+      "action": "earth_day",
+      "title_template": "Happy Earth Day from this caring {animal}! \ud83c\udf0d",
+      "prompt": "cute 2D animated bear carefully planting a tiny seedling in the soil, green leaves sprouting and growing instantly upward, butterflies and bees landing on branches, a tiny glowing Earth globe floating above with a heart, flat design, pastel green and sky blue colors, warm hopeful sunshine, no text, loop motion, 9:16 vertical, kawaii style"
+    },
+    {
+      "name": "mothers_day",
+      "display": "Mother's Day",
+      "dates": {
+        "2026": {"month": 5, "day": 10},
+        "2027": {"month": 5, "day": 9},
+        "2028": {"month": 5, "day": 14}
+      },
+      "window_before": 3,
+      "window_after": 0,
+      "id": 108,
+      "animal": "koala",
+      "action": "mothers_day",
+      "title_template": "Happy Mother's Day! This {animal} loves its mama \ud83c\udf37",
+      "prompt": "cute 2D animated baby koala presenting a big bouquet of wildflowers to a mama koala, mama koala's eyes lighting up with pure joy and love, soft warm golden glow between them, hearts and flower petals floating in the air, flat design, pastel pink lavender and green colors, cozy eucalyptus tree background, no text, loop motion, 9:16 vertical, kawaii style"
+    },
+    {
+      "name": "fathers_day",
+      "display": "Father's Day",
+      "dates": {
+        "2026": {"month": 6, "day": 21},
+        "2027": {"month": 6, "day": 20},
+        "2028": {"month": 6, "day": 18}
+      },
+      "window_before": 3,
+      "window_after": 0,
+      "id": 109,
+      "animal": "bear",
+      "action": "fathers_day",
+      "title_template": "Happy Father's Day from this {animal} cub! \ud83d\udc3b",
+      "prompt": "cute 2D animated bear cub and papa bear sitting together on a sunny picnic blanket sharing a big honey sandwich, papa bear wearing a tiny 'World's Best Dad' badge, hearts floating between them, golden butterflies landing nearby, flat design, pastel blue and golden yellow colors, warm summer afternoon meadow, no text, loop motion, 9:16 vertical, kawaii style"
+    },
+    {
+      "name": "independence_day",
+      "display": "Independence Day",
+      "fixed": {"month": 7, "day": 4},
+      "window_before": 2,
+      "window_after": 1,
+      "id": 110,
+      "animal": "dog",
+      "action": "independence_day",
+      "title_template": "Happy 4th of July from this patriotic {animal}! \ud83c\udf86",
+      "prompt": "cute 2D animated golden retriever puppy waving a tiny American flag with an excited wagging tail, red white and blue fireworks exploding in a star-filled night sky, wearing a patriotic bandana, confetti in national colors raining down, flat design, pastel red white and blue colors, summer celebration vibe, no text, loop motion, 9:16 vertical, kawaii style"
+    },
+    {
+      "name": "halloween",
+      "display": "Halloween",
+      "fixed": {"month": 10, "day": 31},
+      "window_before": 5,
+      "window_after": 0,
+      "id": 111,
+      "animal": "cat",
+      "action": "halloween",
+      "title_template": "Happy Halloween from this spooky {animal}! \ud83c\udf83",
+      "prompt": "cute 2D animated black cat in a tiny pointed witch hat riding a broomstick through a glowing moonlit sky, friendly jack-o-lanterns with big smiles floating around, candy corn and tiny bats, full orange moon behind, flat design, pastel orange and purple colors, spooky but adorable atmosphere, no text, loop motion, 9:16 vertical, kawaii style"
+    },
+    {
+      "name": "diwali",
+      "display": "Diwali",
+      "dates": {
+        "2026": {"month": 10, "day": 20},
+        "2027": {"month": 10, "day": 9},
+        "2028": {"month": 10, "day": 28}
+      },
+      "window_before": 2,
+      "window_after": 2,
+      "id": 112,
+      "animal": "deer",
+      "action": "diwali",
+      "title_template": "Happy Diwali from this glowing {animal}! \ud83e\ude94",
+      "prompt": "cute 2D animated deer carefully lighting tiny clay diyas arranged in a beautiful flower rangoli pattern, golden sparkles and colorful fireworks bursting overhead, marigold garlands decorating the scene, warm golden glow illuminating everything, flat design, pastel gold saffron and deep blue colors, magical Diwali festival of lights night, no text, loop motion, 9:16 vertical, kawaii style"
+    },
+    {
+      "name": "thanksgiving",
+      "display": "Thanksgiving",
+      "dates": {
+        "2026": {"month": 11, "day": 26},
+        "2027": {"month": 11, "day": 25},
+        "2028": {"month": 11, "day": 23}
+      },
+      "window_before": 3,
+      "window_after": 0,
+      "id": 113,
+      "animal": "raccoon",
+      "action": "thanksgiving",
+      "title_template": "Happy Thanksgiving from this grateful {animal}! \ud83c\udf42",
+      "prompt": "cute 2D animated raccoon sitting at a tiny cozy table set with a miniature harvest feast, holding a little 'grateful' sign, golden autumn leaves drifting past a warm window, small pumpkins and corn decorating the scene, candlelight glowing warmly, flat design, pastel orange brown and cream colors, harvest celebration, no text, loop motion, 9:16 vertical, kawaii style"
+    },
+    {
+      "name": "christmas",
+      "display": "Christmas",
+      "fixed": {"month": 12, "day": 25},
+      "window_before": 5,
+      "window_after": 1,
+      "id": 114,
+      "animal": "bear",
+      "action": "christmas",
+      "title_template": "Merry Christmas from this cozy {animal}! \ud83c\udf84",
+      "prompt": "cute 2D animated bear wearing a fluffy red Santa hat carefully wrapping a colorful gift with a big ribbon bow, a sparkling Christmas tree glowing behind, snow falling softly outside a frosty window, cozy fireplace crackling with warmth, fairy lights twinkling everywhere, flat design, pastel red and green with warm gold, magical Christmas eve atmosphere, no text, loop motion, 9:16 vertical, kawaii style"
+    },
+    {
+      "name": "new_year_eve",
+      "display": "New Year's Eve",
+      "fixed": {"month": 12, "day": 31},
+      "window_before": 3,
+      "window_after": 0,
+      "id": 115,
+      "animal": "fox",
+      "action": "new_year_eve",
+      "title_template": "Happy New Year's Eve from this festive {animal}! \ud83e\udd42",
+      "prompt": "cute 2D animated fox wearing a glittery silver party hat standing on a rooftop watching colorful fireworks explode across the midnight skyline, confetti and golden glitter raining down, a big sparkling countdown clock showing 11:59, stars and shooting stars everywhere, flat design, pastel gold silver and midnight blue colors, magical New Year's Eve celebration, no text, loop motion, 9:16 vertical, kawaii style"
+    }
+  ]
+}
