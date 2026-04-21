@@ -1,5 +1,5 @@
 {
-  "total_used": 2500,
+  "total_used": 2625,
   "sessions": [
     {
       "timestamp": "2026-04-09T19:59:28.104661+00:00",
@@ -56,6 +56,13 @@
       "clips_generated": 1,
       "credits_used": 125,
       "total_used_cumulative": 2500
+    },
+    {
+      "timestamp": "2026-04-21T22:32:26.403533+00:00",
+      "prompt_id": 34,
+      "clips_generated": 1,
+      "credits_used": 125,
+      "total_used_cumulative": 2625
     }
   ]
 }
