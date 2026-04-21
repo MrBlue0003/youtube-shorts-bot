@@ -48,6 +48,9 @@ TAGS = [
     "wholesome", "baby animals", "adorable", "animal shorts", "cuteness overload",
     "fluffy animals", "pet videos", "animal videos", "funny pets", "cute video",
     "daily cute", "animals of tiktok", "animal memes", "cutest animals",
+    "cute animation", "animated shorts", "animal content", "cute content",
+    "funny animal video", "kawaii animals", "cozy animation", "heartwarming",
+    "feel good video", "smile", "happiness", "cute creature", "tiny animals",
 ]
 
 HASHTAGS = (
@@ -56,7 +59,15 @@ HASHTAGS = (
     "#Wholesome #BabyAnimals #Adorable #CutenessOverload #FluffyAnimals "
     "#PetVideos #AnimalVideos #FunnyPets #CuteVideo #DailyCute #Cute "
     "#AnimalsOfYouTube #AnimalMemes #CutestAnimals #2DAnimation #Cozy "
-    "#Animals #CuteAnimation"
+    "#Animals #CuteAnimation #FYP #ForYou #ForYouPage #AnimalsOfTikTok "
+    "#CuteShorts #AnimalShorts #FunnyShorts #KawaiiAnimals #CozyShorts "
+    "#HeartWarmingVideo #FeelGood #SmileMore #HappyAnimals #TinyAnimals "
+    "#CuteCreature #AnimatedCute #CuteContent #DailyAnimal #AnimalOfTheDay "
+    "#CuteTok #FunnyTok #AnimalTok #CuteViral #ViralAnimals #MustWatch "
+    "#CuteAlert #CuteMoment #AnimalLove #PetLovers #FurryFriends "
+    "#WholesomeContent #GoodVibesOnly #MoodBooster #InstantSmile "
+    "#CutestEver #TooAdorable #AnimationLovers #CartoonAnimals #DigitalArt "
+    "#AnimalAnimation #CuteCharacters #FunAnimation #LovableAnimals"
 )
 
 
@@ -187,11 +198,22 @@ def generate_metadata(prompt_entry: dict | None = None) -> tuple[str, str]:
     if len(title) > 97:
         title = title[:97] + "…"
 
+    # Animal-specific hashtags (e.g. #Cat #CatShorts #CuteCat #CatLovers)
+    animal_tag = animal.replace(" ", "")
+    animal_hashtags = (
+        f"#{animal_tag} #{animal_tag}Shorts #{animal_tag}Lovers "
+        f"#{animal_tag}Video #{animal_tag}Life #{animal_tag}OfTheDay "
+        f"#{animal_tag}TikTok #{animal_tag}Cute #{animal_tag}Funny "
+        f"#Cute{animal_tag} #Funny{animal_tag} #Baby{animal_tag}"
+    )
+
     description = (
-        f"A little {animal.lower()} moment to brighten your day 🌸\n\n"
-        f"{HASHTAGS}\n\n"
-        "✨ Subscribe for daily cute animal animations!\n"
-        "🔔 Turn on notifications so you never miss one."
+        f"A little {animal.lower()} moment to brighten your day \U0001f338\n\n"
+        f"\U0001f50a Turn on sound for the full experience!\n"
+        f"\u2728 Subscribe for daily cute animal animations! \U0001f514\n"
+        f"\U0001f514 New cute video every single day!\n\n"
+        f"{HASHTAGS}\n"
+        f"{animal_hashtags}"
     )
 
     return title, description
