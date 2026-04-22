@@ -42,15 +42,11 @@ PROMPTS_FILE = config.PROMPTS_DIR / "animal_prompts.json"
 CATEGORY_ID = "15"
 
 TAGS = [
-    "shorts", "cute", "animals", "cute animals", "funny animals",
-    "kawaii", "2d animation", "animated animals", "cozy", "satisfying",
+    "shorts", "cute animals", "funny animals", "kawaii", "animated animals",
     "animal lovers", "cute pets", "funny video", "trending", "viral",
-    "wholesome", "baby animals", "adorable", "animal shorts", "cuteness overload",
-    "fluffy animals", "pet videos", "animal videos", "funny pets", "cute video",
-    "daily cute", "animals of tiktok", "animal memes", "cutest animals",
-    "cute animation", "animated shorts", "animal content", "cute content",
-    "funny animal video", "kawaii animals", "cozy animation", "heartwarming",
-    "feel good video", "smile", "happiness", "cute creature", "tiny animals",
+    "wholesome", "baby animals", "adorable", "cuteness overload",
+    "fluffy animals", "animal videos", "cute animation", "heartwarming",
+    "cute creature", "cozy",
 ]
 
 HASHTAGS = (
