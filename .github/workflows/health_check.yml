@@ -1,13 +1,13 @@
-name: CuteDaily Health Check
+name: CuteDaily Watchdog
 
 on:
   schedule:
-    # Runs every day at 22:00 UTC — checks if at least 1 post happened today
-    - cron: '0 22 * * *'
+    # Runs every 2 hours — triggers bot if it missed its 14:30 UTC window
+    - cron: '0 */2 * * *'
   workflow_dispatch:
 
 jobs:
-  health:
+  watchdog:
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
@@ -18,39 +18,56 @@ jobs:
           token: ${{ secrets.GH_PAT }}
           fetch-depth: 1
 
-      - name: Check last upload
+      - name: Check and trigger if needed
         run: |
           python3 - <<'EOF'
-          import json, sys
-          from datetime import datetime, timezone
+          import json, sys, subprocess
+          from datetime import datetime, timezone, timedelta
+
+          now = datetime.now(timezone.utc)
+          hour = now.hour
+
+          # CuteDaily posts once at 14:30 UTC
+          # Only check between 15:00 and 23:00 UTC (after scheduled time)
+          if hour < 15:
+              print(f"Too early ({hour}:00 UTC) — scheduled at 14:30 UTC, skipping check")
+              sys.exit(0)
 
           try:
               with open("logs/uploaded.json") as f:
                   data = json.load(f)
               uploads = [u for u in data.get("uploads", []) if "video_id" in u]
               if not uploads:
-                  print("NO_UPLOADS")
+                  print("No uploads found — triggering")
                   sys.exit(1)
+
               last = uploads[-1]
               ts = last["timestamp"]
               last_dt = datetime.fromisoformat(ts.replace("Z", "+00:00"))
-              age_hours = (datetime.now(timezone.utc) - last_dt).total_seconds() / 3600
-              print(f"Last upload: {last.get('title','?')} — {age_hours:.1f}h ago")
-              if age_hours > 30:
-                  print(f"WARNING: No post in {age_hours:.1f} hours!")
+              age_hours = (now - last_dt).total_seconds() / 3600
+
+              print(f"Last upload: {last.get('title','?')}")
+              print(f"Posted: {age_hours:.1f}h ago")
+
+              # If no post in last 26 hours AND it's past 15:00 UTC → trigger
+              if age_hours > 26:
+                  print(f"MISSED: No post in {age_hours:.1f}h — triggering now!")
                   sys.exit(1)
-              print("OK: bot is healthy")
+              else:
+                  print("OK: posted recently, no action needed")
+
           except Exception as e:
               print(f"ERROR: {e}")
               sys.exit(1)
           EOF
 
-      - name: Auto-trigger if unhealthy
+      - name: Trigger daily_post if missed
         if: failure()
         run: |
-          echo "Health check failed — auto-triggering daily_post workflow"
-          curl -s -o /dev/null -w "Trigger status: %{http_code}\n" -X POST \
+          echo "Watchdog triggering daily_post..."
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" -X POST \
             -H "Authorization: Bearer ${{ secrets.GH_PAT }}" \
             -H "Accept: application/vnd.github+json" \
             "https://api.github.com/repos/${{ github.repository }}/actions/workflows/daily_post.yml/dispatches" \
-            -d '{"ref":"main"}'
+            -d '{"ref":"main"}')
+          echo "Trigger status: $STATUS"
