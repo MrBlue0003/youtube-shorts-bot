@@ -43,7 +43,7 @@ jobs:
         env:
           RUNWAY_API_KEY:        ${{ secrets.RUNWAY_API_KEY }}
           RUNWAY_API_BASE:       https://api.dev.runwayml.com/v1
-          RUNWAY_CREDIT_BUDGET:  ${{ secrets.RUNWAY_CREDIT_BUDGET || '625' }}
+          RUNWAY_CREDIT_BUDGET:  ${{ secrets.RUNWAY_CREDIT_BUDGET || '1600' }}
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
           YOUTUBE_CHANNEL_ID:    ${{ secrets.YOUTUBE_CHANNEL_ID }}
           YOUTUBE_CLIENT_ID:     ${{ secrets.YOUTUBE_CLIENT_ID }}
