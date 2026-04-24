@@ -70,6 +70,52 @@ INCOMPETECH_TRACKS = [
     "Lobby Time",
 ]
 
+# ── Mood mapping for music selection ──────────────────────────────────────────
+# Maps lowercase track name → mood tag ("playful" | "upbeat" | "calm")
+# Used by assemble.py to pick mood-matched music for each action.
+TRACK_MOODS: dict[str, str] = {
+    "fluffing a duck":              "playful",
+    "monkeys spinning monkeys":     "playful",
+    "sneaky snitch":                "playful",
+    "chipper doodle v2":            "playful",
+    "happy bee":                    "playful",
+    "pixel peeker polka - faster":  "playful",
+    "bushwick tarantella loop":     "playful",
+    "merry go":                     "playful",
+    "hackbeat":                     "playful",
+    "carefree":                     "upbeat",
+    "opportunity walks":            "upbeat",
+    "easy lemon":                   "upbeat",
+    "local forecast":               "upbeat",
+    "wallpaper":                    "upbeat",
+    "bossa antigua":                "upbeat",
+    "gymnopedie no 1":              "calm",
+    "crinoline dreams":             "calm",
+    "pamgaea":                      "calm",
+    "perspectives":                 "calm",
+    "airport lounge":               "calm",
+    "lobby time":                   "calm",
+}
+
+
+def get_mood_for_track(filename: str) -> str:
+    """Return the mood tag for a music file based on its filename.
+
+    Handles filenames like ``incompetech_fluffing_a_duck.mp3`` or
+    ``pb_lofi_02.mp3`` (Pixabay fallbacks → default "upbeat").
+    """
+    name = (
+        filename
+        .replace("incompetech_", "")
+        .replace(".mp3", "")
+        .replace(".wav", "")
+        .replace(".m4a", "")
+        .replace("_", " ")
+        .strip()
+        .lower()
+    )
+    return TRACK_MOODS.get(name, "upbeat")
+
 # ── Pixabay CDN (CC0) — fallback ───────────────────────────────────────────────
 PIXABAY_FALLBACK_URLS = [
     ("pb_lofi_02",     "https://cdn.pixabay.com/audio/2022/01/18/audio_d0a13f69d2.mp3"),

@@ -20,7 +20,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 import config
-from scripts.runway_generate import generate_clips, get_total_credits_used, pick_prompt
+from scripts.video_generate import generate_clips, get_total_credits_used, pick_prompt
 from scripts.assemble import assemble
 from scripts.upload import upload_short
 from scripts.download_music import download_music

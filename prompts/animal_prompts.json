@@ -286,6 +286,153 @@
       "action": "winter_cozy",
       "seasons": ["winter"],
       "prompt": "cute 2D animated cat sitting by a fireplace with hot cocoa and marshmallows, snow falling outside, Christmas lights twinkling, ultra cozy, flat design, pastel red and cream colors, no text, loop motion, 9:16 vertical, kawaii style"
+    },
+    {
+      "id": 42,
+      "animal": "penguin",
+      "action": "cooking",
+      "seasons": ["any"],
+      "prompt": "cute 2D animated penguin in a tiny apron flipping fish-shaped pancakes, happy waddling motion, flat design, pastel blue and white colors, cozy kitchen, no text, loop motion, 9:16 vertical, kawaii style"
+    },
+    {
+      "id": 43,
+      "animal": "koala",
+      "action": "yoga",
+      "seasons": ["any"],
+      "prompt": "cute 2D animated koala doing a peaceful tree pose yoga stance on a eucalyptus branch, serene smile, zen energy, flat design, pastel mint and lavender colors, soft morning light, no text, loop motion, 9:16 vertical, kawaii style"
+    },
+    {
+      "id": 44,
+      "animal": "cat",
+      "action": "painting",
+      "seasons": ["any"],
+      "prompt": "cute 2D animated cat holding a tiny paintbrush, creating a colourful masterpiece, paint splattered on nose, flat design, pastel rainbow accent colors, cozy art studio, no text, loop motion, 9:16 vertical, kawaii style"
+    },
+    {
+      "id": 45,
+      "animal": "dog",
+      "action": "playing",
+      "seasons": ["summer"],
+      "prompt": "cute 2D animated golden retriever chasing a bouncing ball through summer grass, tongue out, ears flopping, pure joy, flat design, pastel yellow and green colors, butterflies around, no text, loop motion, 9:16 vertical, kawaii style"
+    },
+    {
+      "id": 46,
+      "animal": "bunny",
+      "action": "gardening",
+      "seasons": ["spring"],
+      "prompt": "cute 2D animated bunny planting tiny flower seeds in a garden, patting soil with little paws, watering can nearby, butterflies landing on ears, flat design, pastel pink and green colors, no text, loop motion, 9:16 vertical, kawaii style"
+    },
+    {
+      "id": 47,
+      "animal": "panda",
+      "action": "reading",
+      "seasons": ["any"],
+      "prompt": "cute 2D animated panda sitting in a cozy bamboo nook reading a tiny book, glasses on nose, reading light glowing, flat design, pastel green and white colors, hot tea nearby, no text, loop motion, 9:16 vertical, kawaii style"
+    },
+    {
+      "id": 48,
+      "animal": "bear",
+      "action": "stargazing",
+      "seasons": ["summer", "autumn"],
+      "prompt": "cute 2D animated bear lying on a hilltop looking up at a starry sky, eyes wide with wonder, tiny telescope beside it, flat design, pastel navy and golden star colors, shooting stars, no text, loop motion, 9:16 vertical, kawaii style"
+    },
+    {
+      "id": 49,
+      "animal": "lamb",
+      "action": "little_treat",
+      "seasons": ["spring"],
+      "prompt": "cute 2D animated fluffy white lamb receiving a tiny flower crown and a cupcake, eyes sparkling with joy, spinning happily, flat design, pastel pink and cream colors, spring blooms everywhere, no text, loop motion, 9:16 vertical, kawaii style"
+    },
+    {
+      "id": 50,
+      "animal": "chick",
+      "action": "dancing",
+      "seasons": ["spring"],
+      "prompt": "cute 2D animated baby chick doing a tiny happy hop dance, wings flapping, flower petals bouncing around with each step, flat design, pastel yellow and pink colors, spring morning light, no text, loop motion, 9:16 vertical, kawaii style"
+    },
+    {
+      "id": 51,
+      "animal": "capybara",
+      "action": "yoga",
+      "seasons": ["any"],
+      "prompt": "cute 2D animated capybara in a serene lotus pose, eyes closed, calm smile, tiny birds perched on shoulders, flat design, pastel sage green and cream colors, soft sunrise background, no text, loop motion, 9:16 vertical, kawaii style"
+    },
+    {
+      "id": 52,
+      "animal": "fox",
+      "action": "reading",
+      "seasons": ["autumn"],
+      "prompt": "cute 2D animated fox curled under an autumn oak tree reading a book, acorns falling around, cosy scarf and warm glow, flat design, pastel orange and brown colors, golden autumn leaves, no text, loop motion, 9:16 vertical, kawaii style"
+    },
+    {
+      "id": 53,
+      "animal": "frog",
+      "action": "gardening",
+      "seasons": ["spring", "summer"],
+      "prompt": "cute 2D animated frog wearing a tiny gardening hat, watering a patch of mushrooms and flowers with a mini watering can, flat design, pastel green and yellow colors, bees buzzing around, no text, loop motion, 9:16 vertical, kawaii style"
+    },
+    {
+      "id": 54,
+      "animal": "penguin",
+      "action": "little_treat",
+      "seasons": ["winter"],
+      "prompt": "cute 2D animated penguin receiving a tiny fish-shaped cookie, eyes going wide with delight, little happy wiggle, flat design, pastel icy blue and white colors, snowflakes falling gently, no text, loop motion, 9:16 vertical, kawaii style"
+    },
+    {
+      "id": 55,
+      "animal": "duck",
+      "action": "cozy",
+      "seasons": ["any"],
+      "prompt": "cute 2D animated duck tucked into a round nest of soft feathers sipping chamomile tea, rain pattering on the window, flat design, pastel yellow and warm brown colors, candle flickering, no text, loop motion, 9:16 vertical, kawaii style"
+    },
+    {
+      "id": 56,
+      "animal": "cat",
+      "action": "yoga",
+      "seasons": ["any"],
+      "prompt": "cute 2D animated cat gracefully stretching into a yoga pose, sun beam falling through the window, eyes blissfully closed, flat design, pastel lavender and gold colors, floating flower petals, no text, loop motion, 9:16 vertical, kawaii style"
+    },
+    {
+      "id": 57,
+      "animal": "dog",
+      "action": "baking",
+      "seasons": ["any"],
+      "prompt": "cute 2D animated labrador baking dog-treat biscuits, flour on nose, proud look at the oven, flat design, pastel warm yellow and cream colors, cozy kitchen, heart-shaped cookie cutters, no text, loop motion, 9:16 vertical, kawaii style"
+    },
+    {
+      "id": 58,
+      "animal": "koala",
+      "action": "reading",
+      "seasons": ["any"],
+      "prompt": "cute 2D animated koala almost falling asleep while reading a book, head drooping then jolting back up, flat design, pastel grey and mint colors, eucalyptus scent steam rising from tea, no text, loop motion, 9:16 vertical, kawaii style"
+    },
+    {
+      "id": 59,
+      "animal": "bear",
+      "action": "dancing",
+      "seasons": ["any"],
+      "prompt": "cute 2D animated bear doing a big fluffy happy dance, arms waving, belly bouncing, confetti popping, flat design, pastel honey and cream colors, joyful sparkles everywhere, no text, loop motion, 9:16 vertical, kawaii style"
+    },
+    {
+      "id": 60,
+      "animal": "cat",
+      "action": "playing",
+      "seasons": ["summer"],
+      "prompt": "cute 2D animated cat batting at a floating bubble that reflects a tiny rainbow, pure playful concentration, paw swiping dramatically, flat design, pastel mint and pink summer colors, sunshine dapples, no text, loop motion, 9:16 vertical, kawaii style"
+    },
+    {
+      "id": 61,
+      "animal": "panda",
+      "action": "painting",
+      "seasons": ["any"],
+      "prompt": "cute 2D animated panda splashing pastel colours on a canvas with its paws, accidental masterpiece, excited eyes, flat design, pastel rainbow colors everywhere, happy mess, no text, loop motion, 9:16 vertical, kawaii style"
+    },
+    {
+      "id": 62,
+      "animal": "lamb",
+      "action": "cozy_sleep",
+      "seasons": ["winter"],
+      "prompt": "cute 2D animated fluffy white lamb curled in a round ball of wool asleep by a fireplace, tiny Zzz cloud floating up, snow outside the window, flat design, pastel cream and rose colors, candle glow, no text, loop motion, 9:16 vertical, kawaii style"
     }
   ],
   "title_templates": [
@@ -298,6 +445,16 @@
     "Sending you this cozy {animal} for good vibes 🌙",
     "This {animal} is exactly how I feel on weekends 😭",
     "The cutest {animal} you'll see today 🌷",
-    "This {animal} energy is what we all need 💫"
+    "This {animal} energy is what we all need 💫",
+    "Drop everything and watch this {animal} 🚨",
+    "I cannot stop watching this {animal} {action} 😭",
+    "This {animal} is healing my soul one video at a time 🥹",
+    "Crying at how cute this {animal} is 🥺💕",
+    "This {animal} said it's self-care day 🌸",
+    "The internet needed this {animal} today 💕",
+    "Imagine being this {animal} right now ✨",
+    "This {animal} is too wholesome for this world 🌍💕",
+    "You needed to see this {animal} today 🥺",
+    "This {animal} just fixed my whole mood 🌸"
   ]
 }

@@ -54,6 +54,36 @@ _ACTION_HOOKS = {
 }
 _DEFAULT_HOOK = "Meet today's cutest {animal}"
 
+# ── Action → music mood mapping ───────────────────────────────────────────────
+# Controls which Incompetech tracks get picked for each action type.
+# moods: "playful" | "upbeat" | "calm"
+_ACTION_MOODS: dict[str, str] = {
+    "cooking":             "upbeat",
+    "dancing":             "playful",
+    "cozy_sleep":          "calm",
+    "little_treat":        "playful",
+    "exaggerated_reaction":"playful",
+    "birthday":            "playful",
+    "cozy":                "calm",
+    "eating":              "upbeat",
+    "playing":             "playful",
+    "gardening":           "calm",
+    "reading":             "calm",
+    "yoga":                "calm",
+    "baking":              "upbeat",
+    "painting":            "calm",
+    "stargazing":          "calm",
+    "spring_window":       "calm",
+    "spring_walk":         "upbeat",
+    "spring_wakeup":       "upbeat",
+    "summer_beach":        "upbeat",
+    "summer_ice_cream":    "playful",
+    "autumn_harvest":      "upbeat",
+    "autumn_cozy":         "calm",
+    "winter_dance":        "playful",
+    "winter_cozy":         "calm",
+}
+
 
 def _detect_font() -> str:
     """Return an ffmpeg-safe font path for the current OS."""
@@ -152,8 +182,15 @@ def _save_used_track(name: str, total: int) -> None:
         json.dump({"used": used}, f, indent=2)
 
 
-def get_music_track() -> Path | None:
-    """Return a music file that hasn't been used recently, rotating through all tracks."""
+def get_music_track(action: str = "") -> Path | None:
+    """Return a mood-matched music file for the given action, rotating to avoid repeats.
+
+    When ``action`` maps to a known mood (via ``_ACTION_MOODS``), tries to
+    return a track of that mood that hasn't been used recently.  Falls back to
+    any unused track, then resets the rotation if all tracks have been played.
+    """
+    from scripts.download_music import get_mood_for_track  # local import avoids circular
+
     music_files = (
         list(config.MUSIC_DIR.glob("*.mp3")) +
         list(config.MUSIC_DIR.glob("*.wav")) +
@@ -166,17 +203,29 @@ def get_music_track() -> Path | None:
     used = _load_used_tracks()
     used_names = set(used)
 
-    # Alege din track-urile nefolosite inca
-    available = [f for f in music_files if f.name not in used_names]
+    # All tracks not yet used in this rotation
+    unused = [f for f in music_files if f.name not in used_names]
+    if not unused:
+        logger.info("All tracks used — resetting rotation.")
+        unused = music_files
 
-    # Daca toate au fost folosite, reseteaza si ia din toate
-    if not available:
-        logger.info("Toate track-urile au fost folosite — resetez rotatia.")
-        available = music_files
+    # Prefer mood-matched tracks when action is known
+    desired_mood = _ACTION_MOODS.get(action, "") if action else ""
+    if desired_mood:
+        mood_pool = [f for f in unused if get_mood_for_track(f.name) == desired_mood]
+        if mood_pool:
+            chosen = random.choice(mood_pool)
+            _save_used_track(chosen.name, len(music_files))
+            logger.info(
+                f"Music: {chosen.name}  mood={desired_mood}  "
+                f"({len(mood_pool)} mood-matched / {len(unused)} unused)"
+            )
+            return chosen
+        logger.debug(f"No unused {desired_mood} tracks — falling back to any unused track.")
 
-    chosen = random.choice(available)
+    chosen = random.choice(unused)
     _save_used_track(chosen.name, len(music_files))
-    logger.info(f"Music track ales: {chosen.name} ({len(available)} disponibile din {len(music_files)})")
+    logger.info(f"Music: {chosen.name}  ({len(unused)} unused / {len(music_files)} total)")
     return chosen
 
 
@@ -304,8 +353,8 @@ def assemble(
             concat_out = trim_out
             total_duration = config.SHORT_MAX_DURATION
 
-        # Step 4: Add music
-        music_path = get_music_track()
+        # Step 4: Add music (mood-matched to the action)
+        music_path = get_music_track(action=action)
         fade_duration = 1.0  # seconds for fade in/out
 
         if output_name is None:

@@ -128,6 +128,150 @@ _DEFAULT_COMMENT = (
     "👇 Drop your vote!\n\nFollow for daily cute animals 🔔"
 )
 
+# ── Per-action viral title pool ───────────────────────────────────────────────
+# Takes priority over generic title_templates for better clickability.
+# {animal} is replaced with the capitalised animal name.
+_ACTION_TITLES: dict[str, list[str]] = {
+    "cooking": [
+        "This {animal} cooking is the most wholesome thing today 🍳",
+        "POV: Your {animal} decided to become a chef 👨‍🍳",
+        "Nobody talks about how cute {animal}s look while cooking 😭",
+        "This {animal} chef will make you smile instantly 🌸",
+    ],
+    "dancing": [
+        "This {animal} dancing will fix your mood instantly 💃",
+        "POV: This {animal} hears its favourite song 🎵",
+        "The way this {animal} dances though... 😭✨",
+        "I need everyone to see this dancing {animal} 🕺",
+    ],
+    "cozy_sleep": [
+        "The most cozy {animal} nap you'll see today 😴",
+        "POV: Being this {animal} sleeping right now 🌙",
+        "This sleeping {animal} has healed my soul 🥹",
+        "Goodnight from this precious {animal} 💤",
+    ],
+    "little_treat": [
+        "This {animal} getting a little treat is everything 🍰",
+        "POV: You surprise your {animal} with their favourite treat 🎁",
+        "The way this {animal} reacts to treats 😭💕",
+        "This {animal} deserves every single treat 🌸",
+    ],
+    "exaggerated_reaction": [
+        "This {animal}'s reaction will make your day 😂",
+        "POV: This {animal} just received surprising news 😳",
+        "The drama of this {animal} is unmatched 😭✨",
+        "Nobody reacts like this {animal} 💀",
+    ],
+    "cozy": [
+        "Living vicariously through this cozy {animal} 🌙",
+        "POV: Being this {animal} on a rainy day ☔",
+        "This {animal}'s cozy energy is all I need 🥺",
+        "The coziest {animal} you'll see today 🍵",
+    ],
+    "yoga": [
+        "This {animal} doing yoga is my entire personality 🧘",
+        "POV: Your {animal} found inner peace 🌸",
+        "Zen {animal} unlocked 🙏 watch till the end",
+        "This {animal} is more flexible than me 😭",
+    ],
+    "reading": [
+        "This bookworm {animal} is my spirit animal 📚",
+        "POV: This {animal} discovered the joy of reading 🌙",
+        "The way this {animal} reads... 😭💕",
+        "Intellectual {animal} hours 📖✨",
+    ],
+    "gardening": [
+        "This {animal} gardener will make your whole day 🌱",
+        "POV: This {animal} has a green thumb 🌸",
+        "The cutest little gardener in the world 🌻",
+        "This {animal} growing flowers is everything 🥹",
+    ],
+    "baking": [
+        "This {animal} baker will warm your heart instantly 🧁",
+        "POV: Your {animal} decided to start baking 🍞",
+        "The most wholesome {animal} baking video ever 🥹",
+        "This {animal} and its bakery obsession 😭🌸",
+    ],
+    "painting": [
+        "This artistic {animal} is everything 🎨",
+        "POV: This {animal} discovered the joy of painting 🖌️",
+        "The way this {animal} paints... 🥹✨",
+        "Artist {animal} creating magic today 🌸",
+    ],
+    "playing": [
+        "This playful {animal} is too cute to handle 🥹",
+        "POV: Watching your {animal} play all day 🌸",
+        "The energy of this {animal} playing 😭✨",
+        "This {animal} playing will make your day instantly 💕",
+    ],
+    "stargazing": [
+        "This {animal} watching the stars will heal you 🌟",
+        "POV: You and your {animal} stargazing tonight 🌙",
+        "This dreamy {animal} is my whole personality ✨",
+        "Sending you this precious {animal} under the stars 🥺",
+    ],
+    "spring_window": [
+        "This {animal} watching spring rain is so soothing 🌸",
+        "POV: You're this {animal} on a cozy spring afternoon ☔",
+        "The most calming {animal} spring moment 🌷",
+        "This {animal} and the spring rain — instant peace 🌧️",
+    ],
+    "spring_walk": [
+        "This {animal} running through spring flowers 🌸",
+        "POV: First warm spring day with your {animal} 🌷",
+        "The joy of this {animal} in spring is contagious 🥹",
+        "Spring energy from the happiest {animal} alive 🌸✨",
+    ],
+    "spring_wakeup": [
+        "This {animal} waking up to spring will make your day 🌸",
+        "POV: You're this {animal} seeing spring for the first time 🌷",
+        "The most wholesome spring moment with a {animal} 🥹",
+        "This {animal} just discovered spring 🌸✨",
+    ],
+    "summer_beach": [
+        "This {animal} at the beach is summer goals ☀️",
+        "POV: Vacation with your {animal} 🏖️",
+        "The most relaxed {animal} on the whole beach 🥥",
+        "Summer vibes from this cool {animal} 😎",
+    ],
+    "summer_ice_cream": [
+        "This {animal} eating ice cream is everything 🍦",
+        "POV: You and your {animal} on a summer day 🍦",
+        "The panic of this {animal}'s melting ice cream 😭",
+        "Summer's cutest {animal} moment you'll see today 🌞",
+    ],
+    "autumn_harvest": [
+        "This {animal} collecting autumn things is so cozy 🍂",
+        "POV: Autumn adventures with your {animal} 🍁",
+        "The most autumnal {animal} energy imaginable 🌿",
+        "Fall in love with this {animal}'s harvest day 🍂",
+    ],
+    "autumn_cozy": [
+        "This {animal} in autumn is pure cozy energy 🍂",
+        "POV: Autumn afternoon tea with your {animal} ☕",
+        "The coziest autumn {animal} moment on the internet 🍁",
+        "Fall vibes from this precious {animal} 🥹",
+    ],
+    "winter_dance": [
+        "This {animal} ice skating is the cutest thing ever ⛸️",
+        "POV: Winter fun with your dancing {animal} ❄️",
+        "The way this {animal} dances on ice 😭✨",
+        "Winter magic from this adorable {animal} ⛸️",
+    ],
+    "winter_cozy": [
+        "This {animal} by the fireplace will warm your heart 🔥",
+        "POV: Winter night vibes with your {animal} ☕",
+        "The cosiest winter {animal} moment ever 🥹",
+        "Sending warmth through this precious winter {animal} ❄️",
+    ],
+    "birthday": [
+        "This {animal}'s birthday moment is too precious 🥹🎂",
+        "POV: It's your {animal}'s birthday today 🎂",
+        "Happy birthday to the cutest {animal} 🥳🎉",
+        "This birthday {animal} deserves all the cake 🎂💕",
+    ],
+}
+
 TAGS = [
     "shorts", "cute animals", "funny animals", "kawaii", "animated animals",
     "animal lovers", "cute pets", "funny video", "trending", "viral",
@@ -260,22 +404,40 @@ def _load_prompt_data() -> dict:
 
 
 def generate_metadata(prompt_entry: dict | None = None) -> tuple[str, str]:
-    """Return (title, description) for the upload."""
+    """Return (title, description) for the upload.
+
+    Priority:
+      1. Action-specific viral title from ``_ACTION_TITLES`` (highest clickability).
+      2. Generic ``title_templates`` from animal_prompts.json.
+      3. Hard-coded fallback.
+    """
     import random
     data = _load_prompt_data()
 
     if prompt_entry is None:
         prompt_entry = random.choice(data["prompts"])
 
-    animal = prompt_entry["animal"].title()
-    action = prompt_entry["action"].replace("_", " ")
-    templates = data.get("title_templates", [])
+    animal  = prompt_entry["animal"].title()
+    action  = prompt_entry.get("action", "")
+    action_display = action.replace("_", " ")
 
-    if templates:
-        template = random.choice(templates)
-        title = template.replace("{animal}", animal).replace("{action}", action)
+    # Priority 1: action-specific viral title
+    action_pool = _ACTION_TITLES.get(action, [])
+    if action_pool:
+        template = random.choice(action_pool)
+        title = template.replace("{animal}", animal)
     else:
-        title = f"This cute {animal} {action} will make your day 🥹 #shorts"
+        # Priority 2: generic templates from JSON
+        templates = data.get("title_templates", [])
+        if templates:
+            template = random.choice(templates)
+            title = (
+                template
+                .replace("{animal}", animal)
+                .replace("{action}", action_display)
+            )
+        else:
+            title = f"This cute {animal} {action_display} will make your day 🥹 #shorts"
 
     # Ensure title ≤ 100 chars (YouTube limit)
     if len(title) > 97:
