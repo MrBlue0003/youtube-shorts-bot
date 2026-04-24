@@ -514,7 +514,8 @@ def generate_metadata(prompt_entry: dict | None = None) -> tuple[str, str, str]:
         f"{HASHTAGS}\n"
         f"{animal_hashtags}\n"
         f"{weekly_pack}\n"
-        f"{_HASHTAGS_ES}"
+        f"{_HASHTAGS_ES}\n\n"
+        f"\U0001f3b5 Music by Kevin MacLeod (incompetech.com) \u2014 Licensed under CC BY 4.0"
     )
 
     return title, description, title_source
