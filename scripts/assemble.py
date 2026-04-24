@@ -388,6 +388,8 @@ def assemble(
                 "eq=saturation=1.08:gamma_r=1.03:gamma_g=1.02",
                 # Vignette — dark edges pull focus to centre animation
                 "vignette=angle=PI/5:mode=forward",
+                # Sharpening — crisp on small mobile screens without artefacts
+                "unsharp=luma_msize_x=5:luma_msize_y=5:luma_amount=0.8",
                 f"fade=t=in:st=0:d={fade_duration}",
                 f"fade=t=out:st={total_duration - fade_duration}:d={fade_duration}",
                 overlay,
@@ -418,6 +420,7 @@ def assemble(
             video_filter = ",".join(filter(None, [
                 "eq=saturation=1.08:gamma_r=1.03:gamma_g=1.02",
                 "vignette=angle=PI/5:mode=forward",
+                "unsharp=luma_msize_x=5:luma_msize_y=5:luma_amount=0.8",
                 f"fade=t=in:st=0:d={fade_duration}",
                 f"fade=t=out:st={total_duration - fade_duration}:d={fade_duration}",
                 overlay,

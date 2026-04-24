@@ -272,6 +272,49 @@ _ACTION_TITLES: dict[str, list[str]] = {
     ],
 }
 
+# ── Action-specific description openers ──────────────────────────────────────
+_ACTION_OPENERS: dict[str, str] = {
+    "cooking":              "Chef {animal} is in the kitchen and it is absolutely adorable 🍳",
+    "dancing":              "This {animal} cannot stop dancing and honestly neither can we 💃",
+    "cozy_sleep":           "The most perfect {animal} nap you will see today 😴",
+    "little_treat":         "Little treat for the best {animal} ever 🍰",
+    "exaggerated_reaction": "This {animal}s reaction is sending us 😂",
+    "cozy":                 "Pure cozy energy from this precious {animal} 🌙",
+    "yoga":                 "Zen {animal} has found inner peace 🧘",
+    "reading":              "Bookworm {animal} discovered their new favourite hobby 📚",
+    "gardening":            "This little {animal} gardener is growing something magical 🌱",
+    "baking":               "Baker {animal} just pulled something amazing out of the oven 🧁",
+    "painting":             "Artist {animal} is creating todays masterpiece 🎨",
+    "playing":              "Playtime with this {animal} is the best kind of therapy 🌸",
+    "stargazing":           "This dreamy {animal} is watching the stars and so are we 🌟",
+    "spring_window":        "This {animal} watching spring arrive is the most peaceful thing 🌸",
+    "spring_walk":          "Spring joy through the eyes of the happiest {animal} alive 🌷",
+    "spring_wakeup":        "First day of spring and this {animal} is living for it 🌸",
+    "summer_beach":         "Beach mode ON — this {animal} is living the summer dream 🏖️",
+    "summer_ice_cream":     "Race against the sun: this {animal} vs their melting ice cream 🍦",
+    "autumn_harvest":       "Autumn adventures with the coziest {animal} collector 🍂",
+    "autumn_cozy":          "Sweater weather tea and this precious {animal} 🍁",
+    "winter_dance":         "Winter magic on ice with the most graceful {animal} ever ⛸️",
+    "winter_cozy":          "Fireplace cocoa and the coziest {animal} in the world 🔥",
+    "birthday":             "The most special birthday ever for our favourite little {animal} 🎂",
+}
+_DEFAULT_OPENER = "A little {animal} moment to brighten your whole day 🌸"
+
+# ── Weekly rotating hashtag packs (week_number % 4) ──────────────────────────
+# Provides variety without needing an external API.
+_WEEKLY_HASHTAG_PACKS = [
+    "#CutestAnimalEver #AnimalTok #ViralPets #TrendingAnimals #FunnyPetMoments",
+    "#KawaiiAnimals #AnimatedPets #CuteAnimation #AnimalMemes #FunnyAnimalClips",
+    "#WholesomeAnimals #HappyAnimals #AnimalLove #CutestEver #AnimalOfTheDay",
+    "#FunnyAnimals #CuteShorts #AnimalShorts #ViralAnimal #InstantSmile",
+]
+
+# ── Spanish hashtags (broadens reach to Latin America / Spain) ────────────────
+_HASHTAGS_ES = (
+    "#AnimalesAdorables #AnimalesGraciosos #AnimalesTiernos "
+    "#AnimalesKawaii #AnimalCute #AnimalesViral"
+)
+
 TAGS = [
     "shorts", "cute animals", "funny animals", "kawaii", "animated animals",
     "animal lovers", "cute pets", "funny video", "trending", "viral",
@@ -403,7 +446,7 @@ def _load_prompt_data() -> dict:
         return json.load(f)
 
 
-def generate_metadata(prompt_entry: dict | None = None) -> tuple[str, str]:
+def generate_metadata(prompt_entry: dict | None = None) -> tuple[str, str, str]:
     """Return (title, description) for the upload.
 
     Priority:
@@ -422,10 +465,12 @@ def generate_metadata(prompt_entry: dict | None = None) -> tuple[str, str]:
     action_display = action.replace("_", " ")
 
     # Priority 1: action-specific viral title
+    title_source = "generic"
     action_pool = _ACTION_TITLES.get(action, [])
     if action_pool:
         template = random.choice(action_pool)
         title = template.replace("{animal}", animal)
+        title_source = "action_specific"
     else:
         # Priority 2: generic templates from JSON
         templates = data.get("title_templates", [])
@@ -443,7 +488,11 @@ def generate_metadata(prompt_entry: dict | None = None) -> tuple[str, str]:
     if len(title) > 97:
         title = title[:97] + "…"
 
-    # Animal-specific hashtags (e.g. #Cat #CatShorts #CuteCat #CatLovers)
+    # Action-specific opener line for description
+    opener_tpl = _ACTION_OPENERS.get(action, _DEFAULT_OPENER)
+    opener = opener_tpl.replace("{animal}", animal)
+
+    # Animal-specific hashtags
     animal_tag = animal.replace(" ", "")
     animal_hashtags = (
         f"#{animal_tag} #{animal_tag}Shorts #{animal_tag}Lovers "
@@ -452,16 +501,23 @@ def generate_metadata(prompt_entry: dict | None = None) -> tuple[str, str]:
         f"#Cute{animal_tag} #Funny{animal_tag} #Baby{animal_tag}"
     )
 
+    # Weekly rotating hashtag pack
+    from datetime import date
+    week_num = date.today().isocalendar()[1]
+    weekly_pack = _WEEKLY_HASHTAG_PACKS[week_num % len(_WEEKLY_HASHTAG_PACKS)]
+
     description = (
-        f"A little {animal.lower()} moment to brighten your day \U0001f338\n\n"
+        f"{opener}\n\n"
         f"\U0001f50a Turn on sound for the full experience!\n"
         f"\u2728 Subscribe for daily cute animal animations! \U0001f514\n"
         f"\U0001f514 New cute video every single day!\n\n"
         f"{HASHTAGS}\n"
-        f"{animal_hashtags}"
+        f"{animal_hashtags}\n"
+        f"{weekly_pack}\n"
+        f"{_HASHTAGS_ES}"
     )
 
-    return title, description
+    return title, description, title_source
 
 
 # ── Upload ─────────────────────────────────────────────────────────────────────
@@ -527,8 +583,8 @@ def upload_short(
     if not video_path.exists():
         raise FileNotFoundError(f"Video not found: {video_path}")
 
-    title, description = generate_metadata(prompt_entry)
-    logger.info(f"Title: {title}")
+    title, description, title_source = generate_metadata(prompt_entry)
+    logger.info(f"Title [{title_source}]: {title}")
 
     if wait_for_schedule:
         wait_until_upload_time()
@@ -582,7 +638,11 @@ def upload_short(
             video_id = response["id"]
             logger.info(f"Upload complete! Video ID: {video_id}")
             animal = prompt_entry.get("animal", "") if prompt_entry else ""
-            _record_upload(video_id, title, str(video_path), animal=animal)
+            action = prompt_entry.get("action", "") if prompt_entry else ""
+            _record_upload(
+                video_id, title, str(video_path),
+                animal=animal, action=action, title_source=title_source,
+            )
 
             # ── Post-upload actions (non-fatal) ──────────────────────────
             _auto_like(youtube, video_id)
@@ -594,9 +654,14 @@ def upload_short(
             return video_id
 
         except HttpError as e:
-            if e.resp.status in (500, 502, 503, 504) and attempt < max_retries:
+            status = e.resp.status
+            if status in (500, 502, 503, 504) and attempt < max_retries:
                 wait = 2 ** attempt
-                logger.warning(f"HTTP {e.resp.status} — retrying in {wait}s…")
+                logger.warning(f"HTTP {status} — retrying in {wait}s…")
+                time.sleep(wait)
+            elif status == 403 and "quotaExceeded" in str(e) and attempt < max_retries:
+                wait = 60
+                logger.warning(f"Quota exceeded — waiting {wait}s before retry…")
                 time.sleep(wait)
             else:
                 raise
@@ -685,7 +750,14 @@ def _post_comment(youtube, video_id: str, animal: str) -> None:
         logger.warning(f"Could not post comment: {e}")
 
 
-def _record_upload(video_id: str, title: str, video_path: str, animal: str = "") -> None:
+def _record_upload(
+    video_id: str,
+    title: str,
+    video_path: str,
+    animal: str = "",
+    action: str = "",
+    title_source: str = "",
+) -> None:
     if UPLOADED_FILE.exists():
         with open(UPLOADED_FILE, encoding="utf-8") as f:
             data = json.load(f)
@@ -697,6 +769,8 @@ def _record_upload(video_id: str, title: str, video_path: str, animal: str = "")
         "video_id": video_id,
         "title": title,
         "animal": animal,
+        "action": action,
+        "title_source": title_source,   # "action_specific" | "generic" — for A/B tracking
         "file": video_path,
         "url": f"https://www.youtube.com/watch?v={video_id}",
     })

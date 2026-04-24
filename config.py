@@ -79,6 +79,8 @@ SHORT_MAX_DURATION: int = int(os.getenv("SHORT_MAX_DURATION", "60"))
 RUNWAY_CLIP_DURATION: int = 10  # 10s — longer clips = more watch time, better retention
 RUNWAY_CLIPS_PER_SHORT: int = 2  # 2 clips × 10s = 20s Short — more dynamic, higher completion rate
 RUNWAY_MIN_CREDITS: int = int(os.getenv("RUNWAY_MIN_CREDITS", "75"))
+RUNWAY_CREDIT_BUDGET: int = int(os.getenv("RUNWAY_CREDIT_BUDGET", "2000"))  # total plan budget
+RUNWAY_CREDIT_WARN_PCT: float = 0.80  # warn via Telegram when 80% consumed
 
 # ── Notifications ──────────────────────────────────────────────────────────────
 TELEGRAM_BOT_TOKEN: str = os.getenv("TELEGRAM_BOT_TOKEN", "")

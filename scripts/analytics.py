@@ -109,6 +109,41 @@ def update_weights(youtube) -> None:
     logger.info(f"Weights saved → {WEIGHTS_FILE}")
 
 
+def analyze_title_ab(youtube) -> None:
+    """Log A/B performance: action-specific titles vs generic templates.
+
+    Informational only — does not modify weights.json.
+    Helps decide whether action-specific titles are worth keeping.
+    """
+    uploaded_file = config.LOGS_DIR / "uploaded.json"
+    if not uploaded_file.exists():
+        return
+
+    with open(uploaded_file, encoding="utf-8") as f:
+        uploads = json.load(f).get("uploads", [])
+
+    # Only uploads that have title_source field
+    tagged = [u for u in uploads if u.get("title_source") and u.get("video_id")]
+    if len(tagged) < 5:
+        logger.info("Not enough tagged uploads for A/B analysis yet (need ≥5)")
+        return
+
+    video_ids = [u["video_id"] for u in tagged]
+    stats = _fetch_stats(youtube, video_ids)
+
+    groups: dict[str, list[int]] = {}
+    for u in tagged:
+        src = u.get("title_source", "unknown")
+        vid = u.get("video_id")
+        if vid and vid in stats:
+            groups.setdefault(src, []).append(stats[vid])
+
+    logger.info("── A/B Title Source Analysis ──")
+    for src, views in sorted(groups.items()):
+        avg = sum(views) / len(views) if views else 0
+        logger.info(f"  {src:20s}  n={len(views):3d}  avg_views={avg:,.0f}")
+
+
 def main() -> int:
     logging.basicConfig(
         level=logging.INFO,
@@ -117,6 +152,7 @@ def main() -> int:
     try:
         youtube = get_youtube_client()
         update_weights(youtube)
+        analyze_title_ab(youtube)
         return 0
     except Exception as e:
         logger.error(f"Analytics failed: {e}")

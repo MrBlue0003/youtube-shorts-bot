@@ -67,6 +67,40 @@ def _animal_posted_recently(animal: str, hours: int = 20) -> bool:
     return False
 
 
+def _action_posted_recently(action: str, hours: int = 20) -> bool:
+    """Return True if this action was uploaded in the last N hours.
+    Keeps content varied — avoids e.g. two consecutive 'dancing' videos.
+    """
+    uploaded_file = config.LOGS_DIR / "uploaded.json"
+    if not uploaded_file.exists():
+        return False
+    from datetime import timedelta
+    with open(uploaded_file, encoding="utf-8") as f:
+        log = json.load(f)
+    cutoff = datetime.now(timezone.utc) - timedelta(hours=hours)
+    for u in log.get("uploads", []):
+        if u.get("action", "").lower() == action.lower():
+            try:
+                if datetime.fromisoformat(u["timestamp"]) > cutoff:
+                    return True
+            except Exception:
+                pass
+    return False
+
+
+def _rotate_log(max_lines: int = 500) -> None:
+    """Trim daily_log.txt to the last max_lines lines to prevent unbounded growth."""
+    if not LOG_FILE.exists():
+        return
+    try:
+        lines = LOG_FILE.read_text(encoding="utf-8", errors="replace").splitlines()
+        if len(lines) > max_lines:
+            LOG_FILE.write_text("\n".join(lines[-max_lines:]) + "\n", encoding="utf-8")
+            logger.info(f"Log rotated — kept last {max_lines} lines (was {len(lines)})")
+    except Exception as e:
+        logger.warning(f"Log rotation failed (non-fatal): {e}")
+
+
 def print_banner(msg: str, char: str = "─", width: int = 60) -> None:
     line = char * width
     logger.info(line)
@@ -90,13 +124,18 @@ def step_validate() -> None:
 def step_check_credits() -> None:
     print_banner("STEP 2 — Check Credits")
     used = get_total_credits_used()
-    logger.info(f"Credits used so far: {used}")
-    # Note: we track credits used, not remaining. Warn if usage seems high.
-    # Adjust MIN_CREDITS logic based on your Runway plan.
-    logger.info(
-        f"Runway minimum threshold set to {config.RUNWAY_MIN_CREDITS} credits. "
-        "Runway does not expose remaining balance via API — monitor in dashboard."
-    )
+    budget = config.RUNWAY_CREDIT_BUDGET
+    warn_at = int(budget * config.RUNWAY_CREDIT_WARN_PCT)
+    pct = used / budget * 100 if budget else 0
+    logger.info(f"Credits used: {used} / {budget} ({pct:.0f}%)")
+
+    if used >= warn_at:
+        msg = (
+            f"⚠️ Runway credits at {pct:.0f}%: {used}/{budget} used. "
+            f"Approaching budget limit — consider topping up."
+        )
+        logger.warning(msg)
+        notify_telegram(f"⚠️ <b>Credit warning!</b>\n{msg}")
 
 
 def step_ensure_music() -> None:
@@ -190,6 +229,7 @@ def notify_telegram(msg: str) -> None:
 
 def main() -> int:
     setup_logging()
+    _rotate_log(max_lines=500)   # keep log file manageable
     start_ts = datetime.now(timezone.utc)
 
     print_banner("YouTube Shorts Bot - Daily Run", "=")
@@ -200,22 +240,44 @@ def main() -> int:
         step_check_credits()
         step_ensure_music()
 
-        # Pick a prompt once and reuse across steps for consistent metadata
+        # Pick a prompt — avoid recently-used animal AND recently-used action
         prompt_entry = pick_prompt()
+        for _attempt in range(6):   # up to 6 tries for a fresh combo
+            animal  = prompt_entry.get("animal", "")
+            action  = prompt_entry.get("action", "")
+            animal_dup = _animal_posted_recently(animal)
+            action_dup = _action_posted_recently(action)
+            if not animal_dup and not action_dup:
+                break
+            reason = []
+            if animal_dup:
+                reason.append(f"animal '{animal}'")
+            if action_dup:
+                reason.append(f"action '{action}'")
+            logger.info(
+                f"Prompt #{prompt_entry['id']} skipped "
+                f"({' and '.join(reason)} used recently) — picking another…"
+            )
+            prompt_entry = pick_prompt()
+        else:
+            # Exhausted retries — use whatever was last picked and log a warning
+            logger.warning("Could not find a fully-fresh prompt after 6 attempts — proceeding anyway.")
+
+        animal = prompt_entry.get("animal", "")
+        action = prompt_entry.get("action", "")
         logger.info(
             f"Today's prompt: #{prompt_entry['id']} — "
-            f"{prompt_entry['animal']} / {prompt_entry['action']}"
+            f"{animal} / {action}"
         )
 
         output_name = (
             f"short_{datetime.now().strftime('%Y%m%d_%H%M%S')}_"
-            f"{prompt_entry['animal']}_{prompt_entry['action']}"
+            f"{animal}_{action}"
         )
 
-        # Guard: skip if this animal was already posted in last 20h
-        animal = prompt_entry.get("animal", "")
-        if _animal_posted_recently(animal):
-            logger.warning(f"Animal '{animal}' posted recently — skipping to avoid duplicate.")
+        # Hard stop only for exact animal duplicate (double-trigger guard)
+        if _animal_posted_recently(animal, hours=4):
+            logger.warning(f"Animal '{animal}' posted in last 4h — likely double trigger. Skipping.")
             return 0
 
         clip_paths = step_generate(prompt_entry)

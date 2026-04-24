@@ -1,0 +1,45 @@
+name: CuteDaily 24h Velocity Check
+
+on:
+  schedule:
+    # 15:00 UTC = ~24.5h after daily post (14:30 UTC) — catches first-day view surge
+    - cron: '0 15 * * *'
+  workflow_dispatch: {}
+
+jobs:
+  velocity:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GH_PAT }}
+          fetch-depth: 1
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install Python dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run velocity check & update weights
+        env:
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+          YOUTUBE_CHANNEL_ID:    ${{ secrets.YOUTUBE_CHANNEL_ID }}
+          YOUTUBE_CLIENT_ID:     ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+        run: python scripts/velocity_check.py
+
+      - name: Commit updated weights (if changed)
+        run: |
+          git config user.email "cutedaily-bot@github.com"
+          git config user.name "CuteDaily Bot"
+          git add data/weights.json
+          git diff --staged --quiet || git commit -m "chore: velocity weight update [skip ci]"
+          git pull --rebase
+          git push
