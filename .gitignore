@@ -16,6 +16,10 @@ logs/*
 !logs/uploaded.json
 !logs/credits.json
 
+# Data — playlist cache si altele
+data/*
+!data/playlists.json
+
 # Music — pastreaza folderul (melodiile se descarca automat)
 music/*
 !music/.gitkeep

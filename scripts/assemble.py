@@ -14,6 +14,7 @@ import glob
 import json
 import logging
 import os
+import platform
 import random
 import subprocess
 import sys
@@ -25,6 +26,69 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 import config
 
 logger = logging.getLogger(__name__)
+
+# ── Per-animal emoji ──────────────────────────────────────────────────────────
+_ANIMAL_EMOJI = {
+    "cat": "🐱", "dog": "🐶", "capybara": "🦫", "panda": "🐼",
+    "bunny": "🐰", "fox": "🦊", "bear": "🐻", "penguin": "🐧",
+    "koala": "🐨", "frog": "🐸", "duck": "🦆", "chick": "🐣", "lamb": "🐑",
+}
+
+# ── Hook text per action (shown top of screen for first 2.5s) ─────────────────
+_ACTION_HOOKS = {
+    "cooking":             "When your {animal} decides to cook",
+    "dancing":             "This {animal} can't stop dancing",
+    "cozy_sleep":          "The coziest {animal} you'll see today",
+    "little_treat":        "A little treat for this {animal}",
+    "exaggerated_reaction":"This {animal}'s reaction though...",
+    "birthday":            "Happy birthday little {animal}!",
+    "cozy":                "The most cozy {animal} on the internet",
+    "eating":              "This {animal} really loves food",
+    "playing":             "Playtime for this adorable {animal}",
+    "gardening":           "This {animal} has a green thumb",
+    "reading":             "Bookworm {animal} spotted",
+    "yoga":                "Zen {animal} unlocked",
+    "baking":              "Master baker {animal} at work",
+    "painting":            "Artist {animal} creating magic",
+    "stargazing":          "This {animal} loves the night sky",
+}
+_DEFAULT_HOOK = "Meet today's cutest {animal}"
+
+
+def _detect_font() -> str:
+    """Return an ffmpeg-safe font path for the current OS."""
+    if platform.system() == "Windows":
+        return "C\\:/Windows/Fonts/arialbd.ttf"
+    candidates = [
+        "/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf",
+        "/usr/share/fonts/liberation/LiberationSans-Bold.ttf",
+        "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",
+        "/usr/share/fonts/truetype/freefont/FreeSansBold.ttf",
+    ]
+    for c in candidates:
+        if Path(c).exists():
+            return c
+    return candidates[0]
+
+
+_FONT = _detect_font()
+
+
+def _esc(s: str) -> str:
+    """Escape text for ffmpeg drawtext."""
+    return (
+        s.replace("\\", "\\\\")
+         .replace("'",  "\u2019")
+         .replace('"',  "\u201c")
+         .replace(":",  "\\:")
+         .replace("[",  "\\[")
+         .replace("]",  "\\]")
+         .replace(",",  " ")
+         .replace(";",  " ")
+         .replace("%",  "%%")
+         .replace("$",  "\\$")
+         .replace("\n", " ")
+    )
 
 # ── Helpers ────────────────────────────────────────────────────────────────────
 
@@ -41,8 +105,8 @@ def run(cmd: list[str], check: bool = True) -> subprocess.CompletedProcess:
     return result
 
 
-# Shared ffmpeg flags to limit memory usage on constrained servers (Railway)
-_ENCODE_FLAGS = ["-threads", "2", "-preset", "veryfast", "-bufsize", "4M"]
+# fast preset + crf 26: better quality, ~30% smaller than veryfast/crf22
+_ENCODE_FLAGS = ["-threads", "2", "-preset", "fast", "-bufsize", "4M"]
 
 
 def get_duration(path: Path) -> float:
@@ -127,9 +191,40 @@ def scale_filter(width: int = config.VIDEO_WIDTH, height: int = config.VIDEO_HEI
 
 # ── Core assembly ──────────────────────────────────────────────────────────────
 
+def _build_overlay(animal: str, action: str, duration: float) -> str:
+    """Build minimal overlay filters: hook text (2.5s) + name bar + watermark."""
+    emoji    = _ANIMAL_EMOJI.get(animal, "🐾")
+    hook_tpl = _ACTION_HOOKS.get(action, _DEFAULT_HOOK)
+    hook_txt = _esc(hook_tpl.format(animal=animal.title()))
+    name_txt = _esc(f"{emoji} {animal.title()}")
+    hook_end = min(2.5, duration * 0.45)  # never more than 45% of video
+
+    return ",".join([
+        # ── Subtle bottom gradient for name readability ──────────────────
+        "drawbox=x=0:y=1780:w=1080:h=140:color=black@0.45:t=fill",
+
+        # ── Animal name centred in bottom bar ────────────────────────────
+        f"drawtext=fontfile='{_FONT}':text='{name_txt}'"
+        f":fontsize=52:fontcolor=white:x=(w-text_w)/2:y=1820"
+        f":borderw=2:bordercolor=black@0.60",
+
+        # ── Hook text — top of screen, first {hook_end}s only ────────────
+        f"drawtext=fontfile='{_FONT}':text='{hook_txt}'"
+        f":fontsize=44:fontcolor=white:x=(w-text_w)/2:y=72"
+        f":borderw=3:bordercolor=black@0.70"
+        f":enable='between(t,0,{hook_end:.2f})'",
+
+        # ── CuteDaily watermark — subtle bottom-right ─────────────────────
+        f"drawtext=fontfile='{_FONT}':text='CuteDaily'"
+        f":fontsize=22:fontcolor=white@0.28:x=w-text_w-16:y=h-34"
+        f":borderw=1:bordercolor=black@0.10",
+    ])
+
+
 def assemble(
     clip_paths: list[Path] | None = None,
     output_name: str | None = None,
+    prompt_entry: dict | None = None,
 ) -> Path:
     """
     Assemble clips into a Short.
@@ -191,6 +286,11 @@ def assemble(
         total_duration = get_duration(concat_out)
         logger.info(f"Concatenated duration: {total_duration:.1f}s")
 
+        # Build optional overlay (requires prompt_entry)
+        animal = (prompt_entry or {}).get("animal", "")
+        action = (prompt_entry or {}).get("action", "")
+        overlay = _build_overlay(animal, action, total_duration) if animal else ""
+
         # Clamp to max Short duration
         if total_duration > config.SHORT_MAX_DURATION:
             trim_out = tmp / "trimmed.mp4"
@@ -232,10 +332,11 @@ def assemble(
                     f"afade=t=out:st={total_duration - fade_duration}:d={fade_duration}"
                 )
 
-            video_filter = (
-                f"fade=t=in:st=0:d={fade_duration},"
-                f"fade=t=out:st={total_duration - fade_duration}:d={fade_duration}"
-            )
+            video_filter = ",".join(filter(None, [
+                f"fade=t=in:st=0:d={fade_duration}",
+                f"fade=t=out:st={total_duration - fade_duration}:d={fade_duration}",
+                overlay,
+            ]))
 
             run([
                 FFMPEG, "-y",
@@ -247,7 +348,7 @@ def assemble(
                 "-map", "[a]",
                 "-c:v", "libx264",
                 *_ENCODE_FLAGS,
-                "-crf", "22",
+                "-crf", "26",
                 "-profile:v", "high",
                 "-level", "4.1",
                 "-c:a", "aac",
@@ -258,18 +359,19 @@ def assemble(
                 str(output_path),
             ])
         else:
-            # No music — just apply video fades
-            video_filter = (
-                f"fade=t=in:st=0:d={fade_duration},"
-                f"fade=t=out:st={total_duration - fade_duration}:d={fade_duration}"
-            )
+            # No music — just apply video fades + overlay
+            video_filter = ",".join(filter(None, [
+                f"fade=t=in:st=0:d={fade_duration}",
+                f"fade=t=out:st={total_duration - fade_duration}:d={fade_duration}",
+                overlay,
+            ]))
             run([
                 FFMPEG, "-y",
                 "-i", str(concat_out),
                 "-vf", video_filter,
                 "-c:v", "libx264",
                 *_ENCODE_FLAGS,
-                "-crf", "22",
+                "-crf", "26",
                 "-profile:v", "high",
                 "-level", "4.1",
                 "-movflags", "+faststart",

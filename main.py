@@ -98,9 +98,10 @@ def step_generate(prompt_entry: dict) -> list[Path]:
     return clips
 
 
-def step_assemble(clip_paths: list[Path], output_name: str) -> Path:
+def step_assemble(clip_paths: list[Path], output_name: str, prompt_entry: dict) -> Path:
     print_banner("STEP 5 — Assemble Short")
-    short_path = assemble(clip_paths=clip_paths, output_name=output_name)
+    short_path = assemble(clip_paths=clip_paths, output_name=output_name,
+                          prompt_entry=prompt_entry)
     size_mb = short_path.stat().st_size / (1024 * 1024)
     logger.info(f"Short assembled: {short_path.name} ({size_mb:.1f} MB)")
     return short_path
@@ -134,26 +135,16 @@ def notify_terminal(success: bool, video_id: str = "", error: str = "") -> None:
 
 
 def _save_logs_to_repo() -> None:
-    """Commit and push updated logs back to repo so uploaded.json persists across runs."""
+    """Delegate to save_log.py for conflict-safe push."""
     try:
-        repo_dir = Path(__file__).parent
-        def git(*args):
-            subprocess.run(["git", *args], cwd=str(repo_dir), check=True,
-                           capture_output=True, text=True)
-        git("config", "user.email", "cutedaily-bot@github.com")
-        git("config", "user.name", "CuteDaily Bot")
-        git("add", "logs/uploaded.json", "logs/credits.json")
-        # Only commit if there are staged changes
-        diff = subprocess.run(
-            ["git", "diff", "--staged", "--quiet"],
-            cwd=str(repo_dir), capture_output=True
+        result = subprocess.run(
+            [sys.executable, "scripts/save_log.py"],
+            cwd=str(Path(__file__).parent),
+            capture_output=True, text=True,
         )
-        if diff.returncode != 0:
-            git("commit", "-m", "chore: update upload log [skip ci]")
-            git("push")
-            logger.info("Upload log saved to repo.")
-        else:
-            logger.info("No log changes to commit.")
+        logger.info(result.stdout.strip())
+        if result.returncode != 0:
+            logger.warning(f"save_log.py exited {result.returncode}: {result.stderr[:300]}")
     except Exception as e:
         logger.warning(f"Could not save logs to repo: {e}")
 
@@ -201,7 +192,7 @@ def main() -> int:
         )
 
         clip_paths = step_generate(prompt_entry)
-        short_path = step_assemble(clip_paths, output_name)
+        short_path = step_assemble(clip_paths, output_name, prompt_entry)
         video_id = step_upload(short_path, prompt_entry)
 
         elapsed = (datetime.now(timezone.utc) - start_ts).total_seconds()

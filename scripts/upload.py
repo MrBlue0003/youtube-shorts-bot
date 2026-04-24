@@ -41,6 +41,93 @@ PROMPTS_FILE = config.PROMPTS_DIR / "animal_prompts.json"
 # YouTube category ID 15 = Pets & Animals
 CATEGORY_ID = "15"
 
+# ── Per-animal pinned comment polls ──────────────────────────────────────────
+_ANIMAL_COMMENTS = {
+    "cat":
+        "🐱 Would you adopt this cat?\n"
+        "1️⃣ Yes, immediately\n"
+        "2️⃣ Already have 3 cats\n"
+        "3️⃣ Just here for the vibes\n"
+        "👇 Drop your number!\n\nFollow for daily cute animals 🔔",
+    "dog":
+        "🐶 Does this dog deserve ALL the treats?\n"
+        "1️⃣ Obviously yes\n"
+        "2️⃣ Give it the whole bakery\n"
+        "3️⃣ I'd share my lunch\n"
+        "👇 Comment your answer!\n\nFollow for daily cute animals 🔔",
+    "capybara":
+        "🦫 Capybaras are...\n"
+        "1️⃣ The chillest animals alive\n"
+        "2️⃣ My spirit animal\n"
+        "3️⃣ Literally me on weekends\n"
+        "👇 Which one are you?\n\nFollow for daily cute animals 🔔",
+    "panda":
+        "🐼 This panda is...\n"
+        "1️⃣ Too cute to handle\n"
+        "2️⃣ My new favourite animal\n"
+        "3️⃣ Literally a stuffed toy come to life\n"
+        "👇 Drop your number!\n\nFollow for daily cute animals 🔔",
+    "bunny":
+        "🐰 On a scale of 1–3, how adorable is this bunny?\n"
+        "1️⃣ Very adorable\n"
+        "2️⃣ Dangerously adorable\n"
+        "3️⃣ Illegal levels of cuteness\n"
+        "👇 Comment below!\n\nFollow for daily cute animals 🔔",
+    "fox":
+        "🦊 This fox is...\n"
+        "1️⃣ Too clever and too cute\n"
+        "2️⃣ My favourite animated character now\n"
+        "3️⃣ Living rent-free in my head\n"
+        "👇 Which one?\n\nFollow for daily cute animals 🔔",
+    "bear":
+        "🐻 If this bear showed up at your door...\n"
+        "1️⃣ Instant best friends\n"
+        "2️⃣ I'd share my honey\n"
+        "3️⃣ We're going on adventures\n"
+        "👇 Drop your number!\n\nFollow for daily cute animals 🔔",
+    "penguin":
+        "🐧 This penguin is waddling into your heart...\n"
+        "1️⃣ Already adopted it mentally\n"
+        "2️⃣ It's my new screensaver\n"
+        "3️⃣ I need 10 of them\n"
+        "👇 Comment below!\n\nFollow for daily cute animals 🔔",
+    "koala":
+        "🐨 This koala is...\n"
+        "1️⃣ Living my dream life\n"
+        "2️⃣ Too sleepy and too cute\n"
+        "3️⃣ My sleep goals honestly\n"
+        "👇 Which one are you?\n\nFollow for daily cute animals 🔔",
+    "frog":
+        "🐸 This frog is...\n"
+        "1️⃣ Unexpectedly adorable\n"
+        "2️⃣ The hero we needed\n"
+        "3️⃣ My new favourite character\n"
+        "👇 Drop your number!\n\nFollow for daily cute animals 🔔",
+    "duck":
+        "🦆 This duck walked into your life and...\n"
+        "1️⃣ Immediately became my best friend\n"
+        "2️⃣ I'd follow it anywhere\n"
+        "3️⃣ It's the cutest thing I've seen today\n"
+        "👇 Comment below!\n\nFollow for daily cute animals 🔔",
+    "chick":
+        "🐣 This tiny chick is...\n"
+        "1️⃣ Dangerously cute\n"
+        "2️⃣ Too small, too perfect\n"
+        "3️⃣ My heart can't handle it\n"
+        "👇 Which one?\n\nFollow for daily cute animals 🔔",
+    "lamb":
+        "🐑 This lamb is...\n"
+        "1️⃣ The fluffiest thing I've ever seen\n"
+        "2️⃣ Absolutely precious\n"
+        "3️⃣ My instant mood booster\n"
+        "👇 Drop your number!\n\nFollow for daily cute animals 🔔",
+}
+_DEFAULT_COMMENT = (
+    "🥹 Which cute animal should we animate next?\n"
+    "1️⃣ Cat\n2️⃣ Dog\n3️⃣ Capybara\n"
+    "👇 Drop your vote!\n\nFollow for daily cute animals 🔔"
+)
+
 TAGS = [
     "shorts", "cute animals", "funny animals", "kawaii", "animated animals",
     "animal lovers", "cute pets", "funny video", "trending", "viral",
@@ -297,6 +384,7 @@ def upload_short(
             "tags": TAGS,
             "categoryId": CATEGORY_ID,
             "defaultLanguage": "en",
+            "defaultAudioLanguage": "en",
         },
         "status": {
             "privacyStatus": "public",
@@ -333,6 +421,14 @@ def upload_short(
             logger.info(f"Upload complete! Video ID: {video_id}")
             animal = prompt_entry.get("animal", "") if prompt_entry else ""
             _record_upload(video_id, title, str(video_path), animal=animal)
+
+            # ── Post-upload actions (non-fatal) ──────────────────────────
+            _auto_like(youtube, video_id)
+            _post_comment(youtube, video_id, animal)
+            if animal:
+                from scripts.playlists import add_video_to_animal_playlist
+                add_video_to_animal_playlist(youtube, video_id, animal)
+
             return video_id
 
         except HttpError as e:
@@ -396,6 +492,35 @@ def upload_compilation(video_path: Path, month_str: str, youtube=None) -> str:
     video_id = response["id"]
     logger.info(f"Compilation uploaded: https://www.youtube.com/watch?v={video_id}")
     return video_id
+
+
+def _auto_like(youtube, video_id: str) -> None:
+    """Like the video with the channel owner account — small engagement signal."""
+    try:
+        youtube.videos().rate(id=video_id, rating="like").execute()
+        logger.info(f"Auto-liked: {video_id}")
+    except HttpError as e:
+        logger.warning(f"Could not auto-like: {e}")
+
+
+def _post_comment(youtube, video_id: str, animal: str) -> None:
+    """Post a pinned poll comment to drive replies and watch time."""
+    text = _ANIMAL_COMMENTS.get(animal, _DEFAULT_COMMENT)
+    try:
+        resp = youtube.commentThreads().insert(
+            part="snippet",
+            body={
+                "snippet": {
+                    "videoId": video_id,
+                    "topLevelComment": {
+                        "snippet": {"textOriginal": text}
+                    },
+                }
+            },
+        ).execute()
+        logger.info(f"Comment posted: {resp['snippet']['topLevelComment']['id']}")
+    except HttpError as e:
+        logger.warning(f"Could not post comment: {e}")
 
 
 def _record_upload(video_id: str, title: str, video_path: str, animal: str = "") -> None:

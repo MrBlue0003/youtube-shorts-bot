@@ -21,7 +21,7 @@ jobs:
       - name: Install system dependencies
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y ffmpeg
+          sudo apt-get install -y ffmpeg fonts-liberation
           ffmpeg -version | head -1
 
       - name: Set up Python 3.11
@@ -57,10 +57,7 @@ jobs:
         run: |
           git config user.email "cutedaily-bot@github.com"
           git config user.name "CuteDaily Bot"
-          git add logs/uploaded.json logs/credits.json || true
-          git diff --staged --quiet || git commit -m "chore: update upload log [skip ci]"
-          git pull --rebase origin main
-          git push
+          python scripts/save_log.py
 
       - name: Upload logs on failure
         if: failure()
