@@ -92,6 +92,16 @@
       "animal": "duck",
       "file": "/home/runner/work/youtube-shorts-bot/youtube-shorts-bot/shorts/short_20260423_161739_duck_dancing.mp4",
       "url": "https://www.youtube.com/watch?v=4tTZ4TKKq7g"
+    },
+    {
+      "timestamp": "2026-04-24T15:50:35.492142Z",
+      "video_id": "_0e3ozPfPnI",
+      "title": "I need everyone to see this dancing Bunny \ud83d\udd7a",
+      "animal": "bunny",
+      "action": "dancing",
+      "title_source": "action_specific",
+      "file": "/home/runner/work/youtube-shorts-bot/youtube-shorts-bot/shorts/short_20260424_154830_bunny_dancing.mp4",
+      "url": "https://www.youtube.com/watch?v=_0e3ozPfPnI"
     }
   ]
 }
