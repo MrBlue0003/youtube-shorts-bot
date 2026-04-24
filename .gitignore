@@ -19,6 +19,7 @@ logs/*
 # Data — playlist cache si altele
 data/*
 !data/playlists.json
+!data/weights.json
 
 # Music — pastreaza folderul (melodiile se descarca automat)
 music/*

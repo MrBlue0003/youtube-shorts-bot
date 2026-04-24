@@ -26,7 +26,7 @@ CREDITS_FILE = config.LOGS_DIR / "credits.json"
 PROMPTS_FILE = config.PROMPTS_DIR / "animal_prompts.json"
 
 POLL_INTERVAL = 10   # seconds between status checks
-POLL_TIMEOUT = 300   # seconds before giving up on a task
+POLL_TIMEOUT  = 600  # Gen-4.5 can take 8-10 min — give it room
 MAX_RETRIES = 3
 RETRY_BACKOFF = [5, 15, 30]  # seconds
 
@@ -172,8 +172,22 @@ def _get_recent_animals(n: int = 10) -> set[str]:
         return set()
 
 
+def _load_animal_weights() -> dict[str, float]:
+    """Load per-animal performance weights from data/weights.json."""
+    weights_file = Path(__file__).parent.parent / "data" / "weights.json"
+    if not weights_file.exists():
+        return {}
+    try:
+        with open(weights_file, encoding="utf-8") as f:
+            return json.load(f).get("animals", {})
+    except Exception:
+        return {}
+
+
 def pick_prompt() -> dict:
-    """Pick a seasonal prompt, avoiding animals used in the last 10 uploads."""
+    """Pick a seasonal prompt, avoiding animals used in the last 10 uploads.
+    Uses performance weights to favour animals that get more views.
+    """
     with open(PROMPTS_FILE, encoding="utf-8") as f:
         data = json.load(f)
 
@@ -192,14 +206,20 @@ def pick_prompt() -> dict:
     # Filter out recently used animals
     recent_animals = _get_recent_animals(10)
     fresh_pool = [p for p in pool if p.get("animal", "").lower() not in recent_animals]
+    active_pool = fresh_pool if fresh_pool else pool
 
-    if fresh_pool:
-        logger.info(f"Season: {season} | Fresh pool: {len(fresh_pool)} (excluded {len(recent_animals)} recent animals)")
-        chosen = random.choice(fresh_pool)
-    else:
-        # All animals are recent — fall back to least-recently-used
+    if not fresh_pool:
         logger.warning("All animals recently used — picking from full pool")
-        chosen = random.choice(pool)
+
+    logger.info(f"Season: {season} | Pool: {len(active_pool)} prompts")
+
+    # Weighted random choice — animals with more views get picked more often
+    weights = _load_animal_weights()
+    if weights:
+        prompt_weights = [weights.get(p.get("animal", "").lower(), 1.0) for p in active_pool]
+        chosen = random.choices(active_pool, weights=prompt_weights, k=1)[0]
+    else:
+        chosen = random.choice(active_pool)
 
     logger.info(f"Chosen: {chosen.get('animal')} / {chosen.get('action')}")
     return chosen

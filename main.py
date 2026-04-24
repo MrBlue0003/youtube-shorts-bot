@@ -46,6 +46,27 @@ logger = logging.getLogger("main")
 
 # ── Banner ─────────────────────────────────────────────────────────────────────
 
+def _animal_posted_recently(animal: str, hours: int = 20) -> bool:
+    """Return True if this animal was uploaded in the last N hours.
+    Prevents duplicate posts from double workflow_dispatch triggers.
+    """
+    uploaded_file = config.LOGS_DIR / "uploaded.json"
+    if not uploaded_file.exists():
+        return False
+    from datetime import timedelta
+    with open(uploaded_file, encoding="utf-8") as f:
+        log = json.load(f)
+    cutoff = datetime.now(timezone.utc) - timedelta(hours=hours)
+    for u in log.get("uploads", []):
+        if u.get("animal", "").lower() == animal.lower():
+            try:
+                if datetime.fromisoformat(u["timestamp"]) > cutoff:
+                    return True
+            except Exception:
+                pass
+    return False
+
+
 def print_banner(msg: str, char: str = "─", width: int = 60) -> None:
     line = char * width
     logger.info(line)
@@ -191,9 +212,23 @@ def main() -> int:
             f"{prompt_entry['animal']}_{prompt_entry['action']}"
         )
 
+        # Guard: skip if this animal was already posted in last 20h
+        animal = prompt_entry.get("animal", "")
+        if _animal_posted_recently(animal):
+            logger.warning(f"Animal '{animal}' posted recently — skipping to avoid duplicate.")
+            return 0
+
         clip_paths = step_generate(prompt_entry)
         short_path = step_assemble(clip_paths, output_name, prompt_entry)
         video_id = step_upload(short_path, prompt_entry)
+
+        # Cleanup raw Runway clips — they can be large and aren't needed after assembly
+        for clip in clip_paths:
+            try:
+                clip.unlink(missing_ok=True)
+            except Exception:
+                pass
+        logger.info(f"Cleaned up {len(clip_paths)} raw clip(s) from videos/")
 
         elapsed = (datetime.now(timezone.utc) - start_ts).total_seconds()
         logger.info(f"Pipeline completed in {elapsed:.0f}s")

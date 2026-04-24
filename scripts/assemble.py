@@ -322,17 +322,23 @@ def assemble(
                 audio_filter = (
                     f"aloop=loop={loop_times}:size=2e+09,"
                     f"atrim=duration={total_duration},"
+                    f"loudnorm=I=-14:LRA=11:TP=-1,"
                     f"afade=t=in:st=0:d={fade_duration},"
                     f"afade=t=out:st={total_duration - fade_duration}:d={fade_duration}"
                 )
             else:
                 audio_filter = (
                     f"atrim=duration={total_duration},"
+                    f"loudnorm=I=-14:LRA=11:TP=-1,"
                     f"afade=t=in:st=0:d={fade_duration},"
                     f"afade=t=out:st={total_duration - fade_duration}:d={fade_duration}"
                 )
 
             video_filter = ",".join(filter(None, [
+                # Warm kawaii color grade — subtle saturation + slight warmth
+                "eq=saturation=1.08:gamma_r=1.03:gamma_g=1.02",
+                # Vignette — dark edges pull focus to centre animation
+                "vignette=angle=PI/5:mode=forward",
                 f"fade=t=in:st=0:d={fade_duration}",
                 f"fade=t=out:st={total_duration - fade_duration}:d={fade_duration}",
                 overlay,
@@ -361,6 +367,8 @@ def assemble(
         else:
             # No music — just apply video fades + overlay
             video_filter = ",".join(filter(None, [
+                "eq=saturation=1.08:gamma_r=1.03:gamma_g=1.02",
+                "vignette=angle=PI/5:mode=forward",
                 f"fade=t=in:st=0:d={fade_duration}",
                 f"fade=t=out:st={total_duration - fade_duration}:d={fade_duration}",
                 overlay,
