@@ -135,7 +135,6 @@ def step_check_credits() -> None:
             f"Approaching budget limit — consider topping up."
         )
         logger.warning(msg)
-        notify_telegram(f"⚠️ <b>Credit warning!</b>\n{msg}")
 
 
 def step_ensure_music() -> None:
@@ -209,22 +208,6 @@ def _save_logs_to_repo() -> None:
         logger.warning(f"Could not save logs to repo: {e}")
 
 
-def notify_telegram(msg: str) -> None:
-    """Optional: send a Telegram notification."""
-    if not (config.TELEGRAM_BOT_TOKEN and config.TELEGRAM_CHAT_ID):
-        return
-    try:
-        import requests
-        url = f"https://api.telegram.org/bot{config.TELEGRAM_BOT_TOKEN}/sendMessage"
-        requests.post(url, json={
-            "chat_id": config.TELEGRAM_CHAT_ID,
-            "text": msg,
-            "parse_mode": "HTML",
-        }, timeout=10)
-    except Exception as e:
-        logger.warning(f"Telegram notification failed: {e}")
-
-
 # ── Main ───────────────────────────────────────────────────────────────────────
 
 def main() -> int:
@@ -296,11 +279,6 @@ def main() -> int:
         logger.info(f"Pipeline completed in {elapsed:.0f}s")
 
         notify_terminal(success=True, video_id=video_id)
-        notify_telegram(
-            f"✅ <b>Short published!</b>\n"
-            f"<a href='https://www.youtube.com/watch?v={video_id}'>Watch it</a>\n"
-            f"Animal: {prompt_entry['animal']} | Action: {prompt_entry['action']}"
-        )
 
         # Monthly Best Of compilation — runs automatically on day 1-3 of each month
         uploaded_file = config.LOGS_DIR / "uploaded.json"
@@ -313,10 +291,6 @@ def main() -> int:
                 )
                 if comp_id:
                     logger.info(f"Compilation: https://www.youtube.com/watch?v={comp_id}")
-                    notify_telegram(
-                        f"🎬 <b>Monthly compilation uploaded!</b>\n"
-                        f"<a href='https://www.youtube.com/watch?v={comp_id}'>Watch it</a>"
-                    )
             except Exception as comp_err:
                 logger.error(f"Monthly compilation failed (non-fatal): {comp_err}")
 
@@ -327,7 +301,6 @@ def main() -> int:
         tb = traceback.format_exc()
         logger.error(f"Pipeline failed: {e}\n{tb}")
         notify_terminal(success=False, error=str(e))
-        notify_telegram(f"❌ <b>Short bot failed!</b>\n<code>{str(e)[:500]}</code>")
         return 1
 
 
