@@ -6,6 +6,10 @@ on:
     - cron: '30 14 * * *'
   workflow_dispatch:   # allow manual trigger from GitHub UI
 
+concurrency:
+  group: cutedaily-post
+  cancel-in-progress: false   # queue, don't cancel
+
 jobs:
   post:
     runs-on: ubuntu-latest
