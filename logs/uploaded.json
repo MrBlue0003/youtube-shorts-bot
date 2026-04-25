@@ -102,6 +102,16 @@
       "title_source": "action_specific",
       "file": "/home/runner/work/youtube-shorts-bot/youtube-shorts-bot/shorts/short_20260424_154830_bunny_dancing.mp4",
       "url": "https://www.youtube.com/watch?v=_0e3ozPfPnI"
+    },
+    {
+      "timestamp": "2026-04-25T15:11:59.255584Z",
+      "video_id": "cguoT6uPF7Q",
+      "title": "The way this Lamb reacts to treats \ud83d\ude2d\ud83d\udc95",
+      "animal": "lamb",
+      "action": "little_treat",
+      "title_source": "action_specific",
+      "file": "/home/runner/work/youtube-shorts-bot/youtube-shorts-bot/shorts/short_20260425_150930_lamb_little_treat.mp4",
+      "url": "https://www.youtube.com/watch?v=cguoT6uPF7Q"
     }
   ]
 }
