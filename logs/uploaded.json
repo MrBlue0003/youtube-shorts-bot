@@ -112,6 +112,16 @@
       "title_source": "action_specific",
       "file": "/home/runner/work/youtube-shorts-bot/youtube-shorts-bot/shorts/short_20260425_150930_lamb_little_treat.mp4",
       "url": "https://www.youtube.com/watch?v=cguoT6uPF7Q"
+    },
+    {
+      "timestamp": "2026-04-26T15:11:31.549151Z",
+      "video_id": "7uhx6pKGcZ8",
+      "title": "This Cat watching spring rain is so soothing \ud83c\udf38",
+      "animal": "cat",
+      "action": "spring_window",
+      "title_source": "action_specific",
+      "file": "/home/runner/work/youtube-shorts-bot/youtube-shorts-bot/shorts/short_20260426_150922_cat_spring_window.mp4",
+      "url": "https://www.youtube.com/watch?v=7uhx6pKGcZ8"
     }
   ]
 }
