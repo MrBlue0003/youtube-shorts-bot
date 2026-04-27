@@ -122,6 +122,16 @@
       "title_source": "action_specific",
       "file": "/home/runner/work/youtube-shorts-bot/youtube-shorts-bot/shorts/short_20260426_150922_cat_spring_window.mp4",
       "url": "https://www.youtube.com/watch?v=7uhx6pKGcZ8"
+    },
+    {
+      "timestamp": "2026-04-27T16:11:22.441937Z",
+      "video_id": "iwOlObXzOjU",
+      "title": "I need everyone to see this dancing Capybara \ud83d\udd7a",
+      "animal": "capybara",
+      "action": "dancing",
+      "title_source": "action_specific",
+      "file": "/home/runner/work/youtube-shorts-bot/youtube-shorts-bot/shorts/short_20260427_160915_capybara_dancing.mp4",
+      "url": "https://www.youtube.com/watch?v=iwOlObXzOjU"
     }
   ]
 }
