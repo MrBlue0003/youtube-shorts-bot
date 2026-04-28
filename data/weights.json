@@ -1,9 +1,10 @@
 {
-  "updated": "2026-04-27",
+  "updated": "2026-04-28",
   "animals": {
     "duck": 0.9,
     "bunny": 0.9,
     "lamb": 0.9,
-    "cat": 0.9
+    "cat": 0.9,
+    "capybara": 0.9
   }
 }
