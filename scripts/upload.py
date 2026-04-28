@@ -431,10 +431,18 @@ def get_youtube_client():
         except Exception as e:
             logger.warning(f"Token file auth failed: {e}")
 
-    # Priority 3: interactive OAuth flow
+    # Priority 3: interactive OAuth flow (local only — never runs on Railway)
+    import os
     if not creds:
-        logger.info("Starting interactive OAuth2 flow…")
-        creds = _credentials_from_oauth_flow()
+        if os.name == "nt":  # Windows local machine only
+            logger.info("Starting interactive OAuth2 flow…")
+            creds = _credentials_from_oauth_flow()
+        else:
+            raise RuntimeError(
+                "YouTube authentication failed. "
+                "Set YOUTUBE_REFRESH_TOKEN + YOUTUBE_CLIENT_ID + YOUTUBE_CLIENT_SECRET "
+                "in Railway Variables, then redeploy."
+            )
 
     return build("youtube", "v3", credentials=creds, cache_discovery=False)
 
