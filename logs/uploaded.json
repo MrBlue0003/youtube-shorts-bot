@@ -132,6 +132,16 @@
       "title_source": "action_specific",
       "file": "/home/runner/work/youtube-shorts-bot/youtube-shorts-bot/shorts/short_20260427_160915_capybara_dancing.mp4",
       "url": "https://www.youtube.com/watch?v=iwOlObXzOjU"
+    },
+    {
+      "timestamp": "2026-04-28T16:25:48.048476Z",
+      "video_id": "8jzyo8XWE0Y",
+      "title": "This Panda cooking is the most wholesome thing today \ud83c\udf73",
+      "animal": "panda",
+      "action": "cooking",
+      "title_source": "action_specific",
+      "file": "/home/runner/work/youtube-shorts-bot/youtube-shorts-bot/shorts/short_20260428_162339_panda_cooking.mp4",
+      "url": "https://www.youtube.com/watch?v=8jzyo8XWE0Y"
     }
   ]
 }
