@@ -142,6 +142,16 @@
       "title_source": "action_specific",
       "file": "/home/runner/work/youtube-shorts-bot/youtube-shorts-bot/shorts/short_20260428_162339_panda_cooking.mp4",
       "url": "https://www.youtube.com/watch?v=8jzyo8XWE0Y"
+    },
+    {
+      "timestamp": "2026-04-29T16:16:47.343936Z",
+      "video_id": "NFkvWuqkNns",
+      "title": "POV: Being this Frog on a rainy day \u2614",
+      "animal": "frog",
+      "action": "cozy",
+      "title_source": "action_specific",
+      "file": "/home/runner/work/youtube-shorts-bot/youtube-shorts-bot/shorts/short_20260429_161448_frog_cozy.mp4",
+      "url": "https://www.youtube.com/watch?v=NFkvWuqkNns"
     }
   ]
 }
