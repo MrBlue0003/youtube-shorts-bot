@@ -152,6 +152,16 @@
       "title_source": "action_specific",
       "file": "/home/runner/work/youtube-shorts-bot/youtube-shorts-bot/shorts/short_20260429_161448_frog_cozy.mp4",
       "url": "https://www.youtube.com/watch?v=NFkvWuqkNns"
+    },
+    {
+      "timestamp": "2026-04-30T16:04:51.785446Z",
+      "video_id": "EBQ5VTOcdWM",
+      "title": "This Chick deserves every single treat \ud83c\udf38",
+      "animal": "chick",
+      "action": "little_treat",
+      "title_source": "action_specific",
+      "file": "/home/runner/work/youtube-shorts-bot/youtube-shorts-bot/shorts/short_20260430_160113_chick_little_treat.mp4",
+      "url": "https://www.youtube.com/watch?v=EBQ5VTOcdWM"
     }
   ]
 }
