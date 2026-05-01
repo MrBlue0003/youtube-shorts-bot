@@ -162,6 +162,16 @@
       "title_source": "action_specific",
       "file": "/home/runner/work/youtube-shorts-bot/youtube-shorts-bot/shorts/short_20260430_160113_chick_little_treat.mp4",
       "url": "https://www.youtube.com/watch?v=EBQ5VTOcdWM"
+    },
+    {
+      "timestamp": "2026-05-01T15:35:45.902409Z",
+      "video_id": "7t_o2hw67rg",
+      "title": "Nobody reacts like this Fox \ud83d\udc80",
+      "animal": "fox",
+      "action": "exaggerated_reaction",
+      "title_source": "action_specific",
+      "file": "/home/runner/work/youtube-shorts-bot/youtube-shorts-bot/shorts/short_20260501_153346_fox_exaggerated_reaction.mp4",
+      "url": "https://www.youtube.com/watch?v=7t_o2hw67rg"
     }
   ]
 }
