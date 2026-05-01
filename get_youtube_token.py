@@ -5,15 +5,21 @@ Run this ONCE on your local machine:
     python get_youtube_token.py
 
 It will open a browser, ask you to authorise with your Google account,
-then print the refresh token to copy into your .env as YOUTUBE_REFRESH_TOKEN.
+then print the refresh token AND automatically push it to Railway
+(if RAILWAY_TOKEN is set in your .env).
 
 Requirements:
   - client_secrets.json present in this directory
   - google-auth-oauthlib installed  (pip install google-auth-oauthlib)
+
+Optional (for auto-sync to Railway):
+  - Add RAILWAY_TOKEN=<your token> to .env
+  - Get your Railway token at: https://railway.app/account/tokens
 """
 
 import json
 import sys
+import urllib.request
 import webbrowser
 from pathlib import Path
 
@@ -56,6 +62,81 @@ def _find_chrome() -> webbrowser.BaseBrowser:
     print("             Se va folosi browserul default.")
     # Register default browser under the name "chrome" so run_local_server works
     webbrowser.register("chrome", None, webbrowser.get())
+
+
+def _read_env_file() -> dict:
+    """Read key=value pairs from .env file in BASE_DIR."""
+    env_path = BASE_DIR / ".env"
+    result = {}
+    if env_path.exists():
+        for line in env_path.read_text(encoding="utf-8").splitlines():
+            line = line.strip()
+            if not line or line.startswith("#") or "=" not in line:
+                continue
+            k, _, v = line.partition("=")
+            result[k.strip()] = v.strip().strip('"').strip("'")
+    return result
+
+
+def _sync_to_railway(refresh_token: str) -> None:
+    """Push the new refresh token to Railway automatically.
+
+    Requires RAILWAY_TOKEN in your local .env file.
+    Get your token at: https://railway.app/account/tokens
+    """
+    env = _read_env_file()
+    import os
+    api_token = env.get("RAILWAY_TOKEN") or os.getenv("RAILWAY_TOKEN")
+
+    # Hardcoded IDs for youtube-shorts-bot (production environment)
+    service_id = env.get("RAILWAY_SERVICE_ID", "da59f4c1-35ba-487c-a204-79a5d3320f00")
+    environment_id = env.get("RAILWAY_ENVIRONMENT_ID", "5adcc1b0-93be-46ba-b400-3067d47fd7e4")
+
+    if not api_token:
+        print()
+        print("─" * 60)
+        print("  TIP: Auto-sync to Railway not configured.")
+        print("  Add this to your .env to never update Railway manually:")
+        print("    RAILWAY_TOKEN=<your Railway API token>")
+        print("  Get it at: https://railway.app/account/tokens")
+        print("─" * 60)
+        return
+
+    print()
+    print("Syncing token to Railway...")
+    query = "mutation variableUpsert($input: VariableUpsertInput!) { variableUpsert(input: $input) }"
+    payload = json.dumps({
+        "query": query,
+        "variables": {
+            "input": {
+                "serviceId": service_id,
+                "environmentId": environment_id,
+                "name": "YOUTUBE_REFRESH_TOKEN",
+                "value": refresh_token,
+            }
+        }
+    }).encode()
+
+    req = urllib.request.Request(
+        "https://backboard.railway.app/graphql/v2",
+        data=payload,
+        headers={
+            "Authorization": f"Bearer {api_token}",
+            "Content-Type": "application/json",
+        },
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=10) as resp:
+            result = json.loads(resp.read())
+            if result.get("errors"):
+                print(f"  Railway sync FAILED: {result['errors']}")
+                print("  Update YOUTUBE_REFRESH_TOKEN in Railway manually.")
+            else:
+                print("  ✓ Railway YOUTUBE_REFRESH_TOKEN updated automatically!")
+                print("  No manual copy-paste needed.")
+    except Exception as e:
+        print(f"  Railway sync error: {e}")
+        print("  Update YOUTUBE_REFRESH_TOKEN in Railway manually.")
 
 
 def main() -> None:
@@ -119,6 +200,9 @@ def main() -> None:
         secrets = json.load(f)
     web_or_installed = secrets.get("web") or secrets.get("installed") or {}
     print(f"\nClient ID (for reference): {web_or_installed.get('client_id', 'unknown')[:40]}…")
+
+    # Auto-sync to Railway (no-op if RAILWAY_TOKEN not in .env)
+    _sync_to_railway(refresh_token)
 
 
 if __name__ == "__main__":
