@@ -182,6 +182,16 @@
       "title_source": "action_specific",
       "file": "/home/runner/work/youtube-shorts-bot/youtube-shorts-bot/shorts/short_20260502_151222_koala_reading.mp4",
       "url": "https://www.youtube.com/watch?v=vJlMHBwV5mw"
+    },
+    {
+      "timestamp": "2026-05-03T15:13:22.139538Z",
+      "video_id": "Jr8at2ibILw",
+      "title": "The joy of this Dog in spring is contagious \ud83e\udd79",
+      "animal": "dog",
+      "action": "spring_walk",
+      "title_source": "action_specific",
+      "file": "/home/runner/work/youtube-shorts-bot/youtube-shorts-bot/shorts/short_20260503_151121_dog_spring_walk.mp4",
+      "url": "https://www.youtube.com/watch?v=Jr8at2ibILw"
     }
   ]
 }
