@@ -192,6 +192,16 @@
       "title_source": "action_specific",
       "file": "/home/runner/work/youtube-shorts-bot/youtube-shorts-bot/shorts/short_20260503_151121_dog_spring_walk.mp4",
       "url": "https://www.youtube.com/watch?v=Jr8at2ibILw"
+    },
+    {
+      "timestamp": "2026-05-04T16:22:20.003030Z",
+      "video_id": "TCGMhs4K0XE",
+      "title": "Nobody talks about how cute Penguins look while cooking \ud83d\ude2d",
+      "animal": "penguin",
+      "action": "cooking",
+      "title_source": "action_specific",
+      "file": "/home/runner/work/youtube-shorts-bot/youtube-shorts-bot/shorts/short_20260504_161822_penguin_cooking.mp4",
+      "url": "https://www.youtube.com/watch?v=TCGMhs4K0XE"
     }
   ]
 }
