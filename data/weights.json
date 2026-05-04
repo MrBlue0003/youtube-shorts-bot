@@ -1,5 +1,5 @@
 {
-  "updated": "2026-05-03",
+  "updated": "2026-05-04",
   "animals": {
     "duck": 0.9,
     "bunny": 0.9,
@@ -10,6 +10,7 @@
     "frog": 0.9,
     "chick": 0.9,
     "fox": 0.9,
-    "koala": 0.9
+    "koala": 0.9,
+    "dog": 0.9
   }
 }
